@@ -1,0 +1,215 @@
+---
+title: Adding Components
+description: Learn how to add new components to the Gaia UI registry with the complete workflow from creation to documentation.
+---
+
+When you add a new component to Gaia UI, you'll need to follow a structured workflow to ensure it's properly registered, documented, and accessible to users. This guide walks you through each step.
+
+## Component Addition Workflow
+
+<Steps>
+
+### Create the Component File
+
+Add your component to `registry/new-york/ui/your-component.tsx`. This is where the actual component code lives.
+
+```tsx title="registry/new-york/ui/your-component.tsx"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+
+export interface YourComponentProps {
+  /** Brief description of this prop */
+  variant?: "default" | "outline" | "ghost";
+  /** Always include className for customization */
+  className?: string;
+  /** Children when applicable */
+  children?: React.ReactNode;
+}
+
+const YourComponent = React.forwardRef<HTMLDivElement, YourComponentProps>(
+  ({ className, variant = "default", children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "base-classes",
+          variant === "primary" && "primary-classes",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+YourComponent.displayName = "YourComponent";
+
+export { YourComponent };
+```
+
+The registry follows this structure:
+
+```
+registry/
+└── new-york/
+    └── ui/
+        ├── navbar-menu.tsx
+        ├── raised-button.tsx
+        ├── weather-card.tsx
+        └── your-component.tsx  ← Your new component
+```
+
+### Register in registry.json
+
+Open `registry.json` in the project root and add your component to the `items` array:
+
+```json title="registry.json"
+{
+  "name": "your-component",
+  "type": "registry:ui",
+  "title": "Your Component",
+  "description": "A brief, compelling description of what this component does.",
+  "dependencies": ["react-parallax-tilt"],
+  "registryDependencies": ["icons"],
+  "files": [
+    {
+      "path": "registry/new-york/ui/your-component.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
+```
+
+**Real example from the registry:**
+
+```json
+{
+  "name": "raised-button",
+  "type": "registry:ui",
+  "title": "Raised Button",
+  "description": "A button with a subtle 3D raised effect and smooth press animation.",
+  "files": [
+    {
+      "path": "registry/new-york/ui/raised-button.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
+```
+
+After adding your entry, build the registry:
+
+```bash
+pnpm run registry:build
+```
+
+### Add Preview Components
+
+Create preview examples in `components/previews/your-component/`. These previews will be shown in the documentation.
+
+```
+components/
+└── previews/
+    └── your-component/
+        ├── default.tsx          ← Basic usage example
+        ├── with-variants.tsx    ← Different variants
+        └── custom-example.tsx   ← Any other demos
+```
+
+**Example preview component:**
+
+```tsx title="components/previews/your-component/default.tsx"
+import { YourComponent } from "@/registry/new-york/ui/your-component";
+
+export default function YourComponentDefault() {
+  return (
+    <YourComponent variant="default">
+      Example content
+    </YourComponent>
+  );
+}
+```
+
+### Write the Documentation
+
+Create a docs page at `content/docs/components/your-component.mdx`.
+
+Your documentation should include:
+- Title and description frontmatter
+- Component preview
+- Usage examples
+- Installation instructions (automatic and manual)
+- Props documentation with types and descriptions
+- Examples showing different variants and features
+
+See existing component docs for reference patterns.
+
+### Update Navigation (Optional)
+
+If you're adding a new category or the component needs special placement, update `lib/navigation.ts`.
+
+For most components, they'll automatically appear in the components section once documented.
+
+</Steps>
+
+## Component File Structure
+
+If your component has multiple parts or requires additional files:
+
+```
+registry/new-york/ui/
+├── your-component.tsx           // Main component + compound parts
+├── your-component.css           // CSS if needed (rare)
+└── your-component-utils.ts      // Helper functions if needed
+```
+
+**Example with CSS file:**
+
+```json
+{
+  "name": "holo-card",
+  "files": [
+    {
+      "path": "registry/new-york/ui/holo-card.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/new-york/ui/holo-card.css",
+      "type": "registry:ui"
+    }
+  ]
+}
+```
+
+## Testing Your Component Locally
+
+Before submitting, test your component locally:
+
+```bash
+# Start the dev server
+pnpm run dev
+
+# In another terminal, test the installation
+npx shadcn@latest add http://localhost:3000/r/your-component.json
+```
+
+## Checklist Before Submitting
+
+Before you consider a component done:
+
+- Works in light and dark mode
+- Fully keyboard accessible
+- Has proper ARIA labels
+- Respects reduced motion preferences
+- Uses semantic HTML elements
+- Follows the spacing guidelines
+- No hardcoded colors (uses CSS variables)
+- Registered in `registry.json`
+- Has preview components
+- Has documentation with props table
+- Types are exported
+
+## Need Help?
+
+If something isn't covered here or you're unsure about a design decision, look at existing components for patterns. The `tool-calls-section`, `composer`, and `weather-card` components are good references for complex UI.

@@ -1,0 +1,276 @@
+---
+title: File Preview
+description: Display uploaded files with icons, thumbnails, type indicators, and remove functionality.
+---
+
+<ComponentPreview name="file-preview/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add file-preview
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. This component depends on:
+    ```bash
+    npx gaia-ui add icons
+    ```
+
+    2. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/file-preview.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+Display a list of uploaded files with icons, previews, and management controls.
+
+```tsx
+import { FilePreview, UploadedFile } from "@/components/ui/file-preview";
+import { useState } from "react";
+
+export default function Example() {
+  const [files, setFiles] = useState<UploadedFile[]>([
+    {
+      id: "1",
+      url: "/images/photo.jpg",
+      name: "vacation.jpg",
+      type: "image/jpeg"
+    },
+    {
+      id: "2",
+      url: "/files/report.pdf",
+      name: "annual-report.pdf",
+      type: "application/pdf"
+    }
+  ]);
+
+  const handleRemove = (id: string) => {
+    setFiles(files.filter(f => f.id !== id));
+  };
+
+  return <FilePreview files={files} onRemove={handleRemove} />;
+}
+```
+
+## Features
+
+### Automatic File Type Icons
+
+Intelligent icon selection based on file type:
+
+- **Images**: Camera icon (green)
+- **PDFs**: Document icon (red)
+- **Word Docs**: Document icon (blue)
+- **Spreadsheets**: Document icon (green)
+- **Code Files**: Code icon (yellow)
+- **Videos**: Video icon (purple)
+- **Audio**: Music icon (pink)
+- **Archives**: Archive icon (amber)
+- **Default**: Generic file icon (gray)
+
+### Image Thumbnails
+
+Images display actual thumbnails instead of icons:
+
+```tsx
+const files: UploadedFile[] = [
+  {
+    id: "1",
+    url: "https://example.com/photo.jpg",
+    name: "photo.jpg",
+    type: "image/jpeg"  // Automatically shows thumbnail
+  }
+];
+```
+
+### File Type Labels
+
+Smart file type detection and display:
+
+```tsx
+// Shows "PDF"
+{ type: "application/pdf", name: "doc.pdf" }
+
+// Shows "DOC"
+{ type: "application/msword", name: "doc.docx" }
+
+// Shows "MP4"
+{ type: "video/mp4", name: "video.mp4" }
+
+// Shows file extension when type is unknown
+{ type: "application/octet-stream", name: "file.xyz" }
+```
+
+### Upload Progress
+
+Show loading state for files being uploaded:
+
+```tsx
+const files: UploadedFile[] = [
+  {
+    id: "1",
+    url: "",
+    name: "uploading.jpg",
+    type: "image/jpeg",
+    isUploading: true  // Shows spinner overlay
+  }
+];
+```
+
+### Remove Files
+
+X button appears on hover:
+
+```tsx
+<FilePreview
+  files={files}
+  onRemove={(id) => {
+    console.log('Remove file:', id);
+    // Update your files state
+  }}
+/>
+```
+
+### Descriptions
+
+Optional file descriptions:
+
+```tsx
+const files: UploadedFile[] = [
+  {
+    id: "1",
+    url: "/doc.pdf",
+    name: "contract.pdf",
+    type: "application/pdf",
+    description: "Signed on 2024-03-15"  // Optional
+  }
+];
+```
+
+### Responsive Layout
+
+Files wrap naturally on smaller screens:
+
+- Images: 56px square thumbnails
+- Documents: Flexible width with max 220px
+- Gap spacing adjusts automatically
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>files</PropName>
+    <PropType>UploadedFile[]</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Array of files to display.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>onRemove</PropName>
+    <PropType>(id: string) =&gt; void</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Callback when remove button is clicked.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes for the container.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## UploadedFile Type
+
+```tsx
+interface UploadedFile {
+  id: string;             // Unique identifier
+  url: string;            // File URL or data URL
+  name: string;           // Display name
+  type: string;           // MIME type
+  description?: string;   // Optional description
+  isUploading?: boolean;  // Show loading state
+}
+```
+
+## File Type Detection
+
+The component intelligently detects file types:
+
+1. **MIME type matching**: Uses standard MIME types
+2. **Extension fallback**: Checks file extension if MIME type is generic
+3. **Smart labeling**: Converts types to user-friendly labels
+
+Supported categories:
+
+- Images (PNG, JPG, GIF, WebP, SVG)
+- Documents (PDF, DOC, DOCX, ODT, RTF)
+- Spreadsheets (XLS, XLSX, CSV, ODS)
+- Code (JS, TS, PY, JAVA, C, CPP, HTML, CSS)
+- Data (JSON, XML, YAML)
+- Media (MP4, AVI, MOV, MP3, WAV)
+- Archives (ZIP, RAR, TAR, GZ, 7Z)
+
+## Pairing with File Dropzone
+
+These components work great together:
+
+```tsx
+import { FileDropzone, DroppedFile } from "@/components/ui/file-dropzone";
+import { FilePreview, UploadedFile } from "@/components/ui/file-preview";
+import { useState } from "react";
+
+export default function FileUploadExample() {
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+
+  const handleDrop = (droppedFiles: DroppedFile[]) => {
+    const uploaded = droppedFiles.map(f => ({
+      id: f.id,
+      url: f.preview || URL.createObjectURL(f.file),
+      name: f.file.name,
+      type: f.file.type,
+      isUploading: true
+    }));
+
+    setFiles(uploaded);
+    
+    // Simulate upload
+    setTimeout(() => {
+      setFiles(prev => prev.map(f => ({ ...f, isUploading: false })));
+    }, 2000);
+  };
+
+  return (
+    <div>
+      <FileDropzone onFilesDropped={handleDrop} />
+      <FilePreview 
+        files={files}
+        onRemove={(id) => setFiles(files.filter(f => f.id !== id))}
+      />
+    </div>
+  );
+}
+```
+
+## Accessibility
+
+- Remove buttons have descriptive `aria-label` with filename
+- Icons use proper `aria-hidden` attributes
+- Images have alt text
+- Hover states provide clear visual feedback
+- Keyboard accessible remove buttons

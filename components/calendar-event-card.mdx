@@ -1,0 +1,366 @@
+---
+title: "Calendar Event Card"
+description: "A flexible calendar event card with status indicators, action buttons, and customizable styling."
+---
+
+The Calendar Event Card displays event information with a color-coded indicator bar, status management, and optional action buttons. Perfect for AI agents that interact with calendars.
+
+## Preview
+
+<CodeGroup>
+```tsx Display Variant
+import { 
+  CalendarEventCard,
+  EventTitle,
+  EventTime,
+  EventLocation 
+} from "@/components/ui/calendar-event-card";
+
+export default function Example() {
+  return (
+    <CalendarEventCard
+      eventColor="#3b82f6"
+      label="Today, 2:00 PM"
+      variant="display"
+    >
+      <EventTitle>Team Standup</EventTitle>
+      <EventTime startTime="2:00 PM" endTime="2:30 PM" />
+      <EventLocation>Conference Room A</EventLocation>
+    </CalendarEventCard>
+  );
+}
+```
+
+```tsx Action Variant
+import { 
+  CalendarEventCard,
+  EventTitle,
+  EventTime 
+} from "@/components/ui/calendar-event-card";
+
+export default function Example() {
+  const [status, setStatus] = useState("idle");
+  
+  const handleConfirm = () => {
+    setStatus("loading");
+    // Simulate API call
+    setTimeout(() => setStatus("completed"), 1000);
+  };
+
+  return (
+    <CalendarEventCard
+      eventColor="#10b981"
+      label="Tomorrow, 10:00 AM"
+      variant="action"
+      status={status}
+      onAction={handleConfirm}
+    >
+      <EventTitle>Product Demo</EventTitle>
+      <EventTime startTime="10:00 AM" endTime="11:00 AM" />
+    </CalendarEventCard>
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/calendar-event-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy `calendar-event-card.tsx` to your components directory
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Display Variant
+
+For showing existing events without actions:
+
+```tsx
+import { CalendarEventCard, EventTitle, EventTime } from "@/components/ui/calendar-event-card";
+
+<CalendarEventCard
+  eventColor="#3b82f6"
+  label="Today, 2:00 PM"
+  variant="display"
+>
+  <EventTitle>Team Meeting</EventTitle>
+  <EventTime startTime="2:00 PM" endTime="3:00 PM" />
+</CalendarEventCard>
+```
+
+### Action Variant
+
+For events requiring user confirmation:
+
+```tsx
+import { CalendarEventCard, EventTitle, EventTime } from "@/components/ui/calendar-event-card";
+import { useState } from "react";
+
+function EventWithAction() {
+  const [status, setStatus] = useState("idle");
+
+  const handleAction = async () => {
+    setStatus("loading");
+    await createEvent();
+    setStatus("completed");
+  };
+
+  return (
+    <CalendarEventCard
+      eventColor="#10b981"
+      label="Tomorrow"
+      variant="action"
+      status={status}
+      onAction={handleAction}
+    >
+      <EventTitle>New Event</EventTitle>
+      <EventTime startTime="10:00 AM" endTime="11:00 AM" />
+    </CalendarEventCard>
+  );
+}
+```
+
+### Dotted Border (Proposed Event)
+
+```tsx
+<CalendarEventCard
+  eventColor="#3b82f6"
+  label="Proposed"
+  isDotted={true}
+  variant="action"
+  status="idle"
+  onAction={handleAccept}
+>
+  <EventTitle>Coffee Chat</EventTitle>
+  <EventTime startTime="3:00 PM" endTime="3:30 PM" />
+</CalendarEventCard>
+```
+
+### Custom Opacity
+
+```tsx
+<CalendarEventCard
+  eventColor="#6b7280"
+  label="Past Event"
+  opacity={0.5}
+>
+  <EventTitle>Yesterday's Meeting</EventTitle>
+  <EventTime startTime="9:00 AM" endTime="10:00 AM" />
+</CalendarEventCard>
+```
+
+### Danger Action
+
+```tsx
+<CalendarEventCard
+  eventColor="#ef4444"
+  label="Conflicting Event"
+  variant="action"
+  buttonColor="danger"
+  status="idle"
+  onAction={handleCancel}
+>
+  <EventTitle>Cancel This Meeting</EventTitle>
+  <EventTime startTime="2:00 PM" endTime="3:00 PM" />
+</CalendarEventCard>
+```
+
+## Props
+
+### CalendarEventCard
+
+<ResponseField name="eventColor" type="string" required>
+  Hex color code for the event indicator bar and background tint (e.g., `#3b82f6`)
+</ResponseField>
+
+<ResponseField name="children" type="ReactNode" required>
+  Event content - typically EventTitle, EventTime, and EventLocation components
+</ResponseField>
+
+<ResponseField name="variant" type="'display' | 'action'" default="'display'">
+  Card variant:
+  - `display`: Shows event information only
+  - `action`: Includes a confirm button
+</ResponseField>
+
+<ResponseField name="status" type="'idle' | 'loading' | 'completed'" default="'idle'">
+  Button status for action variant:
+  - `idle`: Ready for action
+  - `loading`: Processing
+  - `completed`: Action completed (button disabled)
+</ResponseField>
+
+<ResponseField name="label" type="string">
+  Optional label shown above the event content (e.g., "Today, 2:00 PM")
+</ResponseField>
+
+<ResponseField name="buttonColor" type="'primary' | 'danger'" default="'primary'">
+  Color scheme for the action button:
+  - `primary`: Sky blue
+  - `danger`: Red
+</ResponseField>
+
+<ResponseField name="completedLabel" type="string" default="'Completed'">
+  Text shown on the button when status is `completed`
+</ResponseField>
+
+<ResponseField name="onAction" type="() => void">
+  Callback function called when the confirm button is clicked (only for action variant)
+</ResponseField>
+
+<ResponseField name="isDotted" type="boolean" default="false">
+  Whether to show a dotted border (useful for proposed/tentative events)
+</ResponseField>
+
+<ResponseField name="opacity" type="number" default="1">
+  Card opacity (0-1). Completed events automatically get 0.5 opacity.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+### Helper Components
+
+#### EventTitle
+
+<ResponseField name="children" type="ReactNode" required>
+  The event title text
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes
+</ResponseField>
+
+#### EventTime
+
+<ResponseField name="startTime" type="string" required>
+  Start time (e.g., "2:00 PM")
+</ResponseField>
+
+<ResponseField name="endTime" type="string">
+  End time (e.g., "3:00 PM"). Shows as "2:00 PM - 3:00 PM" when provided.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes
+</ResponseField>
+
+#### EventLocation
+
+<ResponseField name="children" type="ReactNode" required>
+  Location text or component
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes
+</ResponseField>
+
+## Features
+
+### Color Coding
+
+The `eventColor` prop determines:
+- Vertical indicator bar color
+- Background tint color (20% opacity)
+- Border color for dotted variant (50% opacity)
+
+### Status Management
+
+Action buttons show different states:
+- **Idle**: "Confirm" button ready
+- **Loading**: Spinner with "Confirm" text
+- **Completed**: Checkmark with custom label, button disabled
+
+### Visual Variants
+
+- **Display**: Aligned to start, compact layout
+- **Action**: Aligned to end to accommodate button
+- **Dotted**: Dashed border for proposed events
+
+### Accessibility
+
+- Semantic HTML with proper button elements
+- Disabled state for completed actions
+- Clear visual feedback for all states
+- Color-coded with both color and text indicators
+
+## Common Use Cases
+
+### AI Calendar Agent
+
+```tsx
+// Proposed event from AI
+<CalendarEventCard
+  eventColor="#3b82f6"
+  label="Proposed for Tomorrow"
+  variant="action"
+  isDotted={true}
+  status={status}
+  onAction={createEvent}
+>
+  <EventTitle>1-on-1 with Sarah</EventTitle>
+  <EventTime startTime="2:00 PM" endTime="2:30 PM" />
+  <EventLocation>Video Call</EventLocation>
+</CalendarEventCard>
+```
+
+### Conflict Resolution
+
+```tsx
+// Show conflicting event that needs attention
+<CalendarEventCard
+  eventColor="#ef4444"
+  label="Conflicts with existing event"
+  variant="action"
+  buttonColor="danger"
+  status="idle"
+  completedLabel="Cancelled"
+  onAction={cancelEvent}
+>
+  <EventTitle>Overlapping Meeting</EventTitle>
+  <EventTime startTime="2:00 PM" endTime="3:00 PM" />
+</CalendarEventCard>
+```
+
+### Event History
+
+```tsx
+// Past event with reduced opacity
+<CalendarEventCard
+  eventColor="#6b7280"
+  label="Yesterday"
+  opacity={0.5}
+>
+  <EventTitle>Design Review</EventTitle>
+  <EventTime startTime="10:00 AM" endTime="11:00 AM" />
+  <EventLocation>Completed</EventLocation>
+</CalendarEventCard>
+```
+
+<Tip>
+  Use color coding consistently across your app. For example: blue for meetings, green for personal events, red for deadlines.
+</Tip>
+
+<Note>
+  The card automatically handles opacity for completed events. You don't need to set it manually unless you want a different value.
+</Note>

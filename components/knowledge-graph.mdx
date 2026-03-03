@@ -1,0 +1,247 @@
+---
+title: Knowledge Graph
+description: An interactive D3.js-powered knowledge graph visualization with zoom, pan, drag, tooltips, and export functionality.
+---
+
+<ComponentPreview name="knowledge-graph/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add knowledge-graph
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install d3
+    ```
+
+    2. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/knowledge-graph.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+The Knowledge Graph component creates interactive network visualizations perfect for displaying relationships between entities, knowledge bases, or any connected data.
+
+```tsx
+import { KnowledgeGraph } from "@/components/ui/knowledge-graph";
+
+const nodes = [
+  { id: "1", label: "React", type: "framework" },
+  { id: "2", label: "JavaScript", type: "language" },
+  { id: "3", label: "TypeScript", type: "language" },
+  { id: "4", label: "Next.js", type: "framework" },
+];
+
+const links = [
+  { source: "1", target: "2", label: "uses" },
+  { source: "4", target: "1", label: "built on" },
+  { source: "1", target: "3", label: "supports" },
+];
+
+export default function Example() {
+  return (
+    <div className="h-[600px] w-full">
+      <KnowledgeGraph 
+        nodes={nodes} 
+        links={links}
+        onNodeClick={(node) => console.log('Clicked:', node)}
+      />
+    </div>
+  );
+}
+```
+
+## Features
+
+### Interactive Controls
+
+The graph supports multiple interaction methods:
+
+- **Zoom & Pan**: Mouse wheel to zoom, click and drag to pan
+- **Node Dragging**: Drag individual nodes to reposition them
+- **Tooltips**: Hover over nodes to see details
+- **Click Events**: Handle node clicks for navigation or detail views
+
+### Export Functionality
+
+Use the ref handle to export graphs:
+
+```tsx
+import { useRef } from "react";
+import { KnowledgeGraph, KnowledgeGraphHandle } from "@/components/ui/knowledge-graph";
+
+export default function Example() {
+  const graphRef = useRef<KnowledgeGraphHandle>(null);
+
+  return (
+    <>
+      <div className="flex gap-2 mb-4">
+        <button onClick={() => graphRef.current?.exportAsSVG()}>
+          Export as SVG
+        </button>
+        <button onClick={() => graphRef.current?.exportAsPNG()}>
+          Export as PNG
+        </button>
+        <button onClick={() => graphRef.current?.resetZoom()}>
+          Reset Zoom
+        </button>
+      </div>
+      <KnowledgeGraph ref={graphRef} nodes={nodes} links={links} />
+    </>
+  );
+}
+```
+
+### Center Node
+
+Pin important nodes to the center:
+
+```tsx
+<KnowledgeGraph 
+  nodes={nodes} 
+  links={links}
+  centerNodeId="main-concept"
+/>
+```
+
+### Custom Styling
+
+```tsx
+const nodes = [
+  { 
+    id: "1", 
+    label: "Important", 
+    type: "main",
+    size: 30,  // Larger node
+    color: "#ef4444"  // Custom color
+  },
+  { 
+    id: "2", 
+    label: "Detail", 
+    type: "secondary",
+    size: 15  // Smaller node
+  },
+];
+
+const links = [
+  { 
+    source: "1", 
+    target: "2", 
+    label: "contains",
+    strength: 0.5  // Weaker connection
+  },
+];
+```
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>nodes</PropName>
+    <PropType>GraphNode[]</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Array of nodes to display in the graph. Each node must have id, label, and type.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>links</PropName>
+    <PropType>GraphLink[]</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Array of links connecting nodes. Each link needs source and target node IDs.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>onNodeClick</PropName>
+    <PropType>(node: GraphNode) =&gt; void</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Callback fired when a node is clicked.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>onNodeHover</PropName>
+    <PropType>(node: GraphNode | null) =&gt; void</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Callback fired when hovering over a node (or leaving with null).
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>showLegend</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>true</PropDefault>
+    <PropDescription>
+      Display a legend showing node types and their colors.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>showLinkLabels</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>true</PropDefault>
+    <PropDescription>
+      Show labels on links describing the relationship.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>centerNodeId</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      ID of the node to position in the center of the graph.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes for the container.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Node Type
+
+```tsx
+interface GraphNode {
+  id: string;           // Unique identifier
+  label: string;        // Display name
+  type: string;         // Category (affects color)
+  size?: number;        // Node radius (default: 20)
+  color?: string;       // Custom color override
+  data?: unknown;       // Additional metadata
+}
+```
+
+## Link Type
+
+```tsx
+interface GraphLink {
+  source: string;       // Source node ID
+  target: string;       // Target node ID
+  label?: string;       // Relationship label
+  strength?: number;    // Connection strength (default: 1)
+}
+```
+
+## Accessibility
+
+- Fully keyboard accessible via drag interactions
+- Pan and zoom are mouse/trackpad accessible
+- Node colors are automatically generated with sufficient contrast
+- Tooltips provide text alternatives for visual relationships

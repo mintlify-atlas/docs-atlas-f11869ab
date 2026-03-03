@@ -1,0 +1,128 @@
+---
+title: Gaia UI - React Components for AI Assistants
+description: Production-ready UI components designed specifically for building AI assistants and conversational interfaces. Battle-tested, accessible, and beautiful.
+---
+
+<img width="170" height="170" alt="Gaia UI Logo" src="https://github.com/user-attachments/assets/df0f6e50-4e45-4118-8925-4f9230ac3093" />
+
+# Gaia UI
+
+A collection of production-ready UI components designed specifically for building AI assistants and chatbots. These are the components we use at GAIA, now available for anyone building conversational interfaces.
+
+## Why Gaia UI?
+
+Building a great chat or assistant interface requires more than just generic UI components. We've spent countless hours refining these components to handle the unique challenges of conversational UIs.
+
+Instead of reinventing the wheel, use the same battle-tested components that power GAIA.
+
+### Our Philosophy
+
+**Quality Over Quantity** - We focus on shipping production-ready components that solve real problems. Each component is:
+
+- ✅ Battle-tested in production at GAIA
+- ✅ Designed to handle edge cases and real-world scenarios
+- ✅ Accessible, responsive, and performant
+- ✅ Solving problems better than existing alternatives
+
+You won't find generic components that duplicate what's already available. If we're shipping it, it's because we use it in production and it adds genuine value to the ecosystem.
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install Gaia UI in your Next.js project with a single command
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get your first component working in under 5 minutes
+  </Card>
+  <Card title="Components" icon="grid" href="/components/composer">
+    Browse all available components with live examples
+  </Card>
+  <Card title="Contributing" icon="github" href="https://github.com/theexperiencecompany/ui">
+    Help us build the best AI component library
+  </Card>
+</CardGroup>
+
+## Featured Components
+
+### Composer
+
+A powerful message input component with file uploads, slash commands, and tool integration. Perfect for AI chat interfaces.
+
+```tsx
+import { Composer } from "@/components/ui/composer";
+
+export function ChatInput() {
+  return (
+    <Composer
+      placeholder="Ask me anything..."
+      onSubmit={(message, files) => {
+        console.log("Message:", message);
+        console.log("Files:", files);
+      }}
+      tools={[
+        {
+          id: "search",
+          name: "Search",
+          description: "Search the web",
+        },
+      ]}
+    />
+  );
+}
+```
+
+### Message Bubble
+
+Beautiful message bubbles with support for grouping, timestamps, and custom content. Styled like iMessage for a familiar feel.
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export function ChatMessage() {
+  return (
+    <MessageBubble
+      message="Hello! How can I help you today?"
+      variant="received"
+      grouped="first"
+    />
+  );
+}
+```
+
+### Tool Calls Section
+
+Display AI tool calls with loading states, results, and error handling. Essential for showing users what your AI is doing.
+
+### Weather Card
+
+Stunning weather visualizations with animated backgrounds, forecasts, and detailed weather information.
+
+### And Many More
+
+Browse the full collection of components including raised buttons, navbar menus, file dropzones, knowledge graphs, and more.
+
+## Built With
+
+- **Next.js 15** - For the documentation and registry
+- **Tailwind CSS v4** - For styling
+- **TypeScript** - For type safety
+- **Radix UI** - For accessible primitives
+- **Framer Motion** - For animations
+- **shadcn CLI** - For component installation
+
+## Current Status
+
+Gaia UI is in **beta**. We're actively migrating components from our internal GAIA codebase, replacing HeroUI with shadcn/ui for better compatibility and smaller bundle sizes. The library is stable and used in production, but APIs may change as we refine components before v1.0.
+
+## Community & Support
+
+Join our growing community of users and contributors:
+
+- **[Discord](https://discord.heygaia.io)** — Chat with the team and other users
+- **[Twitter](https://twitter.com/trygaia)** — Get the latest news and updates
+- **[GitHub](https://github.com/theexperiencecompany/ui)** — Report issues and contribute
+
+## License
+
+MIT License - feel free to use these components in your projects!

@@ -1,0 +1,366 @@
+---
+title: Theming
+description: Customize Gaia UI components with CSS variables, dark mode support, and flexible theming options.
+---
+
+Gaia UI uses CSS variables and a design token system for flexible, consistent theming. Every component supports both light and dark modes out of the box.
+
+## CSS Variables
+
+All colors in Gaia UI are defined using CSS variables that automatically adapt to light and dark modes.
+
+### Color System
+
+The color system uses OKLCH color space for perceptually uniform colors:
+
+```css
+:root {
+  --background: oklch(1 0 0);           /* Pure white */
+  --foreground: oklch(0.145 0 0);       /* Near black */
+  --muted: oklch(0.97 0 0);             /* Light gray */
+  --muted-foreground: oklch(0.556 0 0); /* Medium gray */
+  --primary: oklch(0.205 0 0);          /* Dark gray */
+  --primary-foreground: oklch(0.985 0 0); /* Off-white */
+}
+
+.dark {
+  --background: oklch(0.145 0 0);       /* Dark background */
+  --foreground: oklch(0.985 0 0);       /* Light text */
+  --muted: oklch(0.269 0 0);            /* Dark gray */
+  --muted-foreground: oklch(0.708 0 0); /* Light gray */
+  --primary: oklch(0.922 0 0);          /* Light gray */
+  --primary-foreground: oklch(0.205 0 0); /* Dark text */
+}
+```
+
+### Available Color Tokens
+
+<Note>
+All color tokens automatically switch between light and dark mode. Use Tailwind classes like `bg-background` and `text-foreground` to leverage these tokens.
+</Note>
+
+#### Backgrounds and Surfaces
+
+- `background` — Primary background color
+- `foreground` — Primary text color
+- `card` — Card background
+- `card-foreground` — Card text color
+- `popover` — Popover background
+- `popover-foreground` — Popover text color
+
+#### Interactive Elements
+
+- `primary` — Primary action color
+- `primary-foreground` — Text on primary color
+- `secondary` — Secondary elements
+- `secondary-foreground` — Text on secondary
+- `muted` — Muted backgrounds
+- `muted-foreground` — Muted text
+- `accent` — Accent highlights
+- `accent-foreground` — Text on accent
+
+#### Semantic Colors
+
+- `destructive` — Error and destructive actions
+- `destructive-foreground` — Text on destructive
+
+#### Borders and Inputs
+
+- `border` — Border color
+- `input` — Input border color
+- `ring` — Focus ring color
+
+### Using Color Tokens
+
+```tsx
+// ✅ Good - uses theme-aware colors
+<div className="bg-background text-foreground">
+  <p className="text-muted-foreground">Secondary text</p>
+  <button className="bg-primary text-primary-foreground">
+    Primary Action
+  </button>
+</div>
+
+// ❌ Bad - hardcoded colors won't adapt to theme
+<div className="bg-white text-black">
+  <p className="text-gray-500">Secondary text</p>
+</div>
+```
+
+## Dark Mode
+
+Dark mode is automatically handled by the `.dark` class on a parent element (typically `<html>` or `<body>`).
+
+### Implementation
+
+Gaia UI uses a custom variant for dark mode:
+
+```css
+@custom-variant dark (&:is(.dark *));
+```
+
+This allows you to use the `dark:` prefix in Tailwind classes:
+
+```tsx
+<div className="bg-zinc-100 dark:bg-zinc-800">
+  <span className="text-zinc-900 dark:text-white">
+    Text that adapts to theme
+  </span>
+</div>
+```
+
+### Dark Mode Patterns
+
+From the Composer component:
+
+```tsx
+<div className={cn(
+  // Light mode: light gray background
+  "bg-zinc-100",
+  // Dark mode: darker gray background
+  "dark:bg-zinc-800"
+)}>
+  <textarea className={cn(
+    "text-zinc-900 dark:text-white",
+    "placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+  )} />
+</div>
+```
+
+<Warning>
+Always test your components in both light and dark modes. What looks good in light mode might have contrast issues in dark mode.
+</Warning>
+
+## Border Radius
+
+Border radius values use a consistent scale:
+
+```css
+:root {
+  --radius: 0.625rem; /* Base radius: 10px */
+  --radius-sm: calc(var(--radius) - 4px);  /* 6px */
+  --radius-md: calc(var(--radius) - 2px);  /* 8px */
+  --radius-lg: var(--radius);              /* 10px */
+  --radius-xl: calc(var(--radius) + 4px);  /* 14px */
+}
+```
+
+Access these via Tailwind classes:
+
+```tsx
+<div className="rounded-sm">   {/* 6px */}
+<div className="rounded-md">   {/* 8px */}
+<div className="rounded-lg">   {/* 10px */}
+<div className="rounded-xl">   {/* 14px */}
+```
+
+## Customizing Colors
+
+You can customize the color palette by overriding CSS variables in your `globals.css`:
+
+```css
+:root {
+  /* Override primary color with blue */
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.985 0 0);
+}
+
+.dark {
+  /* Override primary color in dark mode */
+  --primary: oklch(0.696 0.17 162.48);
+  --primary-foreground: oklch(0.145 0 0);
+}
+```
+
+### Example: Custom Brand Colors
+
+```css
+/* In your globals.css */
+:root {
+  /* Custom brand colors */
+  --primary: oklch(0.55 0.22 250);        /* Brand blue */
+  --accent: oklch(0.75 0.15 160);         /* Brand green */
+  --destructive: oklch(0.577 0.245 27);   /* Error red */
+}
+```
+
+<Tip>
+Use [OKLCH Color Picker](https://oklch.com/) to find perceptually uniform colors. OKLCH provides better color consistency across light and dark modes.
+</Tip>
+
+## Component-Specific Theming
+
+Some components use additional CSS variables for fine-grained control.
+
+### Example: HoloCard
+
+The HoloCard component uses custom properties for sizing:
+
+```css
+.holo-card {
+  --holo-width: 320px;
+  --holo-height: 446px;
+  width: var(--holo-width);
+  height: var(--holo-height);
+}
+```
+
+And adjusts effects for light mode:
+
+```css
+.light .holo-card {
+  box-shadow:
+    -3px -3px 3px 0 rgba(38, 230, 247, 0.2),
+    3px 3px 3px 0 rgba(247, 89, 228, 0.2),
+    0 0 6px 2px rgba(255, 231, 89, 0.2);
+}
+```
+
+## Opacity Patterns
+
+Use opacity to create subtle variations without adding new color tokens:
+
+```tsx
+// Subtle backgrounds
+<div className="bg-muted/50">        {/* 50% opacity */}
+<div className="bg-primary/10">      {/* 10% opacity */}
+
+// Transparent borders
+<div className="border border-white/10">  {/* In dark mode */}
+```
+
+### Common Opacity Values
+
+- `/10` (10%) — Very subtle tints
+- `/20` (20%) — Subtle backgrounds
+- `/50` (50%) — Medium transparency
+- `/70` (70%) — Slightly transparent
+- `/90` (90%) — Nearly opaque
+
+## Selection Styles
+
+Customize text selection colors:
+
+```css
+::selection {
+  background-color: black;
+  color: white;
+}
+
+html.dark ::selection {
+  background-color: white;
+  color: black;
+}
+```
+
+## Chart Colors
+
+For data visualization, Gaia UI provides chart color tokens:
+
+```css
+:root {
+  --chart-1: oklch(0.646 0.222 41.116);  /* Orange */
+  --chart-2: oklch(0.6 0.118 184.704);   /* Cyan */
+  --chart-3: oklch(0.398 0.07 227.392);  /* Blue */
+  --chart-4: oklch(0.828 0.189 84.429);  /* Yellow */
+  --chart-5: oklch(0.769 0.188 70.08);   /* Green */
+}
+```
+
+Use with Tailwind:
+
+```tsx
+<div className="bg-chart-1">Orange</div>
+<div className="bg-chart-2">Cyan</div>
+```
+
+## Responsive Theming
+
+Combine theming with responsive classes:
+
+```tsx
+<div className={cn(
+  "bg-white dark:bg-zinc-900",
+  "md:bg-zinc-50 md:dark:bg-zinc-800",  // Different on larger screens
+  "p-4 md:p-6"                           // More padding on larger screens
+)}>
+```
+
+## Testing Your Theme
+
+### Checklist
+
+- [ ] Test in both light and dark modes
+- [ ] Verify sufficient contrast (use browser dev tools)
+- [ ] Check interactive states (hover, focus, active)
+- [ ] Ensure borders and dividers are visible in both modes
+- [ ] Test with reduced opacity values
+- [ ] Verify focus rings are visible
+
+### Browser DevTools
+
+Most browsers allow you to:
+
+1. Toggle dark mode in DevTools
+2. Check contrast ratios
+3. Simulate color blindness
+4. View CSS variable values
+
+<Note>
+Chrome DevTools has a "Rendering" panel where you can emulate dark mode and test `prefers-reduced-motion`.
+</Note>
+
+## Best Practices
+
+### Do:
+
+- Use CSS variables for all colors
+- Test in both light and dark modes
+- Use semantic color names (primary, destructive, muted)
+- Leverage opacity for subtle variations
+- Use OKLCH for better color consistency
+
+### Don't:
+
+- Hardcode color values
+- Use only hex colors
+- Skip dark mode testing
+- Use colors that fail contrast checks
+- Mix color systems (stay consistent with OKLCH)
+
+## Examples
+
+### Themed Card
+
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
+export function ThemedCard() {
+  return (
+    <Card className="bg-card text-card-foreground">
+      <CardHeader>
+        <CardTitle>Themed Card</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">
+          This card automatically adapts to your theme.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Custom Accent Color
+
+```tsx
+// Override accent for specific component
+<div style={{ 
+  '--accent': 'oklch(0.6 0.2 320)', 
+  '--accent-foreground': 'oklch(0.98 0 0)' 
+}}>
+  <Button variant="ghost" className="text-accent hover:bg-accent hover:text-accent-foreground">
+    Custom Accent
+  </Button>
+</div>
+```

@@ -1,0 +1,412 @@
+---
+title: "Notification Card"
+description: "A notification card component with action buttons, read/unread states, and timestamps."
+---
+
+The Notification Card displays notifications with support for action buttons, read states, and time formatting. Migrated from GAIA's EnhancedNotificationCard.
+
+## Preview
+
+<CodeGroup>
+```tsx Unread
+import { NotificationCard } from "@/components/ui/notification-card";
+
+export default function Example() {
+  return (
+    <NotificationCard
+      id="notif-1"
+      title="New message from Sarah"
+      body="Can you review the design mockups I sent?"
+      status="unread"
+      createdAt={new Date()}
+    />
+  );
+}
+```
+
+```tsx With Actions
+import { NotificationCard } from "@/components/ui/notification-card";
+
+const actions = [
+  {
+    id: "view",
+    label: "View Message",
+    type: "redirect",
+    style: "primary"
+  },
+  {
+    id: "archive",
+    label: "Archive",
+    type: "api_call"
+  }
+];
+
+export default function Example() {
+  return (
+    <NotificationCard
+      id="notif-2"
+      title="Document ready for review"
+      body="The Q1 report has been finalized and is ready for your approval."
+      status="unread"
+      createdAt="2024-03-03T10:30:00Z"
+      actions={actions}
+      onAction={(notifId, actionId, type) => {
+        console.log(`Action ${actionId} triggered`);
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/notification-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy `notification-card.tsx` to your components directory
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Notification
+
+```tsx
+import { NotificationCard } from "@/components/ui/notification-card";
+
+<NotificationCard
+  id="notif-1"
+  title="System Update"
+  body="Your system has been updated to the latest version."
+  status="unread"
+  createdAt={new Date()}
+/>
+```
+
+### With Mark as Read
+
+```tsx
+import { NotificationCard } from "@/components/ui/notification-card";
+import { useState } from "react";
+
+function NotificationList() {
+  const [notifications, setNotifications] = useState([
+    { id: "1", title: "New message", body: "...", status: "unread" }
+  ]);
+
+  const markAsRead = (id) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, status: "read" } : n)
+    );
+  };
+
+  return (
+    <NotificationCard
+      {...notifications[0]}
+      onMarkAsRead={markAsRead}
+    />
+  );
+}
+```
+
+### With Actions
+
+```tsx
+import { NotificationCard } from "@/components/ui/notification-card";
+import { useState } from "react";
+
+function NotificationWithActions() {
+  const [loadingActionId, setLoadingActionId] = useState(null);
+
+  const actions = [
+    {
+      id: "approve",
+      label: "Approve",
+      type: "api_call",
+      style: "primary"
+    },
+    {
+      id: "reject",
+      label: "Reject",
+      type: "api_call",
+      style: "danger"
+    }
+  ];
+
+  const handleAction = async (notifId, actionId, type) => {
+    setLoadingActionId(actionId);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    if (type === "redirect") {
+      window.location.href = `/action/${actionId}`;
+    }
+    
+    setLoadingActionId(null);
+  };
+
+  return (
+    <NotificationCard
+      id="notif-1"
+      title="Approval Required"
+      body="A new document needs your approval."
+      status="unread"
+      actions={actions}
+      onAction={handleAction}
+      loadingActionId={loadingActionId}
+    />
+  );
+}
+```
+
+## Props
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the notification
+</ResponseField>
+
+<ResponseField name="title" type="string" required>
+  Notification title/heading
+</ResponseField>
+
+<ResponseField name="body" type="string" required>
+  Notification message/description
+</ResponseField>
+
+<ResponseField name="status" type="'unread' | 'read' | 'archived'" default="'unread'">
+  Current status of the notification. Affects styling and visibility of the unread indicator.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string | Date">
+  Timestamp when the notification was created. Automatically formatted as relative time (e.g., "2m ago", "3h ago").
+</ResponseField>
+
+<ResponseField name="actions" type="NotificationAction[]">
+  Array of action buttons to display
+  
+  <Expandable title="NotificationAction properties">
+    <ResponseField name="id" type="string" required>
+      Unique identifier for the action
+    </ResponseField>
+    
+    <ResponseField name="label" type="string" required>
+      Button text
+    </ResponseField>
+    
+    <ResponseField name="type" type="ActionType" required>
+      Type of action:
+      - `redirect`: Navigation action (shows link icon)
+      - `api_call`: API call action (shows checkmark icon)
+      - `workflow`: Workflow trigger (shows clock icon)
+      - `modal`: Opens modal (shows alert icon)
+    </ResponseField>
+    
+    <ResponseField name="style" type="'primary' | 'danger' | 'default'">
+      Visual style of the button:
+      - `primary`: Blue accent
+      - `danger`: Red accent
+      - `default`: Gray/muted
+    </ResponseField>
+    
+    <ResponseField name="executed" type="boolean">
+      Whether the action has been executed. When true, shows checkmark and disables button.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="onMarkAsRead" type="(id: string) => void">
+  Callback when the mark as read button is clicked. Only shown for unread notifications.
+</ResponseField>
+
+<ResponseField name="onAction" type="(notificationId: string, actionId: string, actionType: ActionType) => void">
+  Callback when an action button is clicked
+</ResponseField>
+
+<ResponseField name="loadingActionId" type="string">
+  ID of the action currently loading. Shows spinner on that action button.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Status Indicators
+
+- **Unread**: Blue dot indicator, darker background
+- **Read**: No indicator, lighter background, muted text
+- **Archived**: (Same as read, typically filtered from main list)
+
+### Time Formatting
+
+Automatically formats timestamps:
+- "Just now" - Less than 1 minute
+- "5m ago" - Less than 1 hour
+- "3h ago" - Less than 24 hours
+- "2d ago" - Less than 7 days
+- "Mar 1" - Older than 7 days
+
+### Action Types
+
+Each action type has a specific icon:
+
+| Type | Icon | Use Case |
+|------|------|----------|
+| `redirect` | Link | Navigate to a page |
+| `api_call` | Checkmark | Trigger an API call |
+| `workflow` | Clock | Start a workflow |
+| `modal` | Alert | Open a modal/dialog |
+
+### Action Styles
+
+- **Primary**: Blue background, used for main actions
+- **Danger**: Red background, used for destructive actions
+- **Default**: Gray background, used for secondary actions
+
+### Loading States
+
+When an action is loading:
+- Spinner appears on the button
+- Button becomes semi-transparent
+- Other actions remain clickable (unless type is modal)
+
+### Executed Actions
+
+When an action is marked as executed:
+- Checkmark icon appears
+- Button is disabled
+- Button has reduced opacity
+
+## Examples
+
+### Approval Workflow
+
+```tsx
+const approvalNotification = {
+  id: "approval-1",
+  title: "Expense Report Pending",
+  body: "John submitted an expense report for $1,250 that requires your approval.",
+  status: "unread",
+  createdAt: "2024-03-03T14:30:00Z",
+  actions: [
+    {
+      id: "approve",
+      label: "Approve",
+      type: "api_call",
+      style: "primary"
+    },
+    {
+      id: "review",
+      label: "Review Details",
+      type: "redirect",
+      style: "default"
+    },
+    {
+      id: "reject",
+      label: "Reject",
+      type: "api_call",
+      style: "danger"
+    }
+  ]
+};
+
+<NotificationCard {...approvalNotification} onAction={handleApproval} />
+```
+
+### Simple Alert
+
+```tsx
+const alertNotification = {
+  id: "alert-1",
+  title: "Deployment Successful",
+  body: "Your changes have been deployed to production.",
+  status: "unread",
+  createdAt: new Date(Date.now() - 300000), // 5 minutes ago
+  actions: [
+    {
+      id: "view",
+      label: "View Deployment",
+      type: "redirect",
+      style: "primary"
+    }
+  ]
+};
+
+<NotificationCard {...alertNotification} />
+```
+
+### Multi-step Workflow
+
+```tsx
+const workflowNotification = {
+  id: "workflow-1",
+  title: "Code Review Requested",
+  body: "Sarah requested your review on PR #142: Update authentication flow",
+  status: "unread",
+  createdAt: "2024-03-03T09:15:00Z",
+  actions: [
+    {
+      id: "start-review",
+      label: "Start Review",
+      type: "workflow",
+      style: "primary"
+    },
+    {
+      id: "view-pr",
+      label: "View PR",
+      type: "redirect"
+    },
+    {
+      id: "skip",
+      label: "Skip",
+      type: "api_call"
+    }
+  ]
+};
+
+<NotificationCard {...workflowNotification} onAction={handleWorkflow} />
+```
+
+## Styling
+
+The notification card uses:
+- Zinc color palette for light/dark mode
+- Rounded corners (rounded-2xl)
+- Subtle background transitions between read/unread
+- Hover effects on action buttons
+- Smooth transitions for all state changes
+
+## Accessibility
+
+- Semantic HTML structure
+- ARIA labels on icon-only buttons
+- Keyboard navigation support
+- Clear visual indicators for all states
+- Screen reader friendly time formatting
+
+<Tip>
+  Group notifications by status (unread first) and sort by `createdAt` for the best user experience.
+</Tip>
+
+<Note>
+  Modal-type actions don't show loading states because the modal typically handles its own loading UI.
+</Note>

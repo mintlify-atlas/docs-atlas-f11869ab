@@ -1,0 +1,362 @@
+---
+title: Composer
+description: A chat message input component with file attachments, auto-growing textarea, and tool integration support.
+---
+
+The Composer component is a full-featured chat input interface that combines message composition with file attachments, slash command tool selection, and context menu options. It features an auto-growing textarea, smart keyboard handling, and seamless integration with other Gaia UI components.
+
+## Preview
+
+<ComponentPreview name="composer-demo" />
+
+## Features
+
+- **Auto-growing textarea** - Expands as you type, up to a configurable maximum
+- **File attachments** - Built-in file preview with drag-and-drop support
+- **Slash commands** - Integrated tool selection dropdown
+- **Context menu** - Customizable plus button with actions
+- **Keyboard shortcuts** - Enter to send, Shift+Enter for new line, Escape to close menus
+- **Loading states** - Disabled state when processing
+- **Light/dark mode** - Fully themed for both modes
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx gaia-ui add composer
+```
+
+This will install the component along with its dependencies: `icons`, `file-preview`, and `slash-command-dropdown`.
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+**Install dependencies:**
+
+```bash
+npm install @hugeicons/react @hugeicons/core-free-icons
+```
+
+**Copy the source files:**
+
+1. Copy `registry/new-york/ui/composer.tsx`
+2. Copy `registry/new-york/ui/file-preview.tsx`
+3. Copy `registry/new-york/ui/slash-command-dropdown.tsx`
+4. Copy `registry/new-york/ui/icons.tsx`
+5. Copy `lib/utils/tool-icons.tsx`
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { Composer } from "@/components/ui/composer";
+
+export function ChatInput() {
+  const handleSubmit = (message: string, files?: UploadedFile[]) => {
+    console.log("Message:", message);
+    console.log("Files:", files);
+  };
+
+  return (
+    <Composer
+      placeholder="What can I do for you today?"
+      onSubmit={handleSubmit}
+    />
+  );
+}
+```
+
+### With Tools Integration
+
+```tsx
+import { Composer, type Tool } from "@/components/ui/composer";
+import { useState } from "react";
+
+const tools: Tool[] = [
+  {
+    name: "search",
+    category: "search",
+    description: "Search the web for information"
+  },
+  {
+    name: "create_image",
+    category: "creative",
+    description: "Generate AI images"
+  }
+];
+
+export function ChatWithTools() {
+  const [value, setValue] = useState("");
+
+  const handleToolSelect = (tool: Tool) => {
+    console.log("Tool selected:", tool);
+    // Optionally insert tool reference into message
+    setValue((prev) => `${prev}/${tool.name} `);
+  };
+
+  return (
+    <Composer
+      value={value}
+      onChange={setValue}
+      tools={tools}
+      onToolSelect={handleToolSelect}
+      showToolsButton={true}
+    />
+  );
+}
+```
+
+### With File Attachments
+
+```tsx
+import { Composer, type UploadedFile } from "@/components/ui/composer";
+import { useState } from "react";
+
+export function ChatWithFiles() {
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+
+  const handleAttachClick = () => {
+    // Trigger file picker
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.onchange = (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files) {
+        const newFiles = Array.from(target.files).map((file) => ({
+          id: crypto.randomUUID(),
+          url: URL.createObjectURL(file),
+          name: file.name,
+          type: file.type,
+        }));
+        setFiles((prev) => [...prev, ...newFiles]);
+      }
+    };
+    input.click();
+  };
+
+  const handleRemoveFile = (id: string) => {
+    setFiles((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  return (
+    <Composer
+      attachedFiles={files}
+      onRemoveFile={handleRemoveFile}
+      onAttachClick={handleAttachClick}
+    />
+  );
+}
+```
+
+### With Context Menu
+
+```tsx
+import { Composer, type ComposerContextOption } from "@/components/ui/composer";
+import { File01Icon, Image01Icon } from "@/components/icons";
+
+const contextOptions: ComposerContextOption[] = [
+  {
+    id: "attach-file",
+    label: "Attach File",
+    icon: <File01Icon size={16} />,
+    description: "Upload a document",
+    onClick: () => console.log("Attach file")
+  },
+  {
+    id: "attach-image",
+    label: "Attach Image",
+    icon: <Image01Icon size={16} />,
+    description: "Upload an image",
+    onClick: () => console.log("Attach image")
+  }
+];
+
+export function ChatWithContext() {
+  return (
+    <Composer
+      contextOptions={contextOptions}
+    />
+  );
+}
+```
+
+### Controlled Component
+
+```tsx
+import { Composer } from "@/components/ui/composer";
+import { useState } from "react";
+
+export function ControlledComposer() {
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (msg: string) => {
+    setIsLoading(true);
+    // Send message to API
+    await fetch("/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ message: msg })
+    });
+    setMessage(""); // Clear after sending
+    setIsLoading(false);
+  };
+
+  return (
+    <Composer
+      value={message}
+      onChange={setMessage}
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="placeholder" type="string" default="'What can I do for you today?'">
+  Placeholder text shown when the input is empty.
+</ParamField>
+
+<ParamField path="onSubmit" type="(message: string, files?: UploadedFile[]) => void">
+  Callback fired when the user submits a message (Enter key or send button).
+</ParamField>
+
+<ParamField path="onChange" type="(value: string) => void">
+  Callback fired when the input value changes.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Whether the composer is disabled.
+</ParamField>
+
+<ParamField path="showToolsButton" type="boolean" default="true">
+  Whether to show the tools button in the toolbar.
+</ParamField>
+
+<ParamField path="onToolSelect" type="(tool: Tool) => void">
+  Callback fired when a tool is selected from the slash command dropdown.
+</ParamField>
+
+<ParamField path="tools" type="Tool[]" default="[]">
+  Array of available tools for the slash command dropdown.
+</ParamField>
+
+<ParamField path="onAttachClick" type="() => void">
+  Callback fired when the attach button is clicked (if no context options are provided).
+</ParamField>
+
+<ParamField path="contextOptions" type="ComposerContextOption[]">
+  Context menu options shown in the plus button dropdown.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean" default="false">
+  Whether to auto-focus the input on mount.
+</ParamField>
+
+<ParamField path="maxRows" type="number" default="8">
+  Maximum number of rows for the auto-growing textarea.
+</ParamField>
+
+<ParamField path="defaultValue" type="string" default="''">
+  Initial value for uncontrolled usage.
+</ParamField>
+
+<ParamField path="value" type="string">
+  Controlled value of the input.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the container.
+</ParamField>
+
+<ParamField path="attachedFiles" type="UploadedFile[]" default="[]">
+  Array of files to display in the preview area.
+</ParamField>
+
+<ParamField path="onRemoveFile" type="(id: string) => void">
+  Callback fired when a file is removed from the preview.
+</ParamField>
+
+<ParamField path="isLoading" type="boolean" default="false">
+  Whether the composer is in a loading state (disables interactions).
+</ParamField>
+
+## Type Definitions
+
+### Tool
+
+```tsx
+interface Tool {
+  /** Unique tool identifier */
+  name: string;
+  /** Category for grouping tools */
+  category: string;
+  /** Description shown below tool name */
+  description?: string;
+  /** Custom icon (defaults to category icon) */
+  icon?: React.ReactNode;
+}
+```
+
+### UploadedFile
+
+```tsx
+interface UploadedFile {
+  id: string;
+  url: string;
+  name: string;
+  type: string;
+  description?: string;
+  isUploading?: boolean;
+}
+```
+
+### ComposerContextOption
+
+```tsx
+interface ComposerContextOption {
+  id: string;
+  label: string;
+  icon?: ReactNode;
+  description?: string;
+  onClick?: () => void;
+}
+```
+
+## Accessibility
+
+- Full keyboard navigation support
+- Enter submits message, Shift+Enter adds new line
+- Escape closes dropdowns
+- Proper ARIA labels on interactive elements
+- Focus indicators for keyboard users
+
+## Design Notes
+
+- Uses Gaia UI's primary color (#00bbff) for the send button
+- Auto-growing textarea provides natural typing experience
+- Generous touch targets (44x44px minimum) for mobile
+- Smooth transitions and animations
+- Respects user's color scheme preference
+
+## Related Components
+
+- [File Preview](/components/file-preview) - Used for displaying attached files
+- [Slash Command Dropdown](/components/slash-command-dropdown) - Tool selection interface
+- [Icons](/components/icons) - Icon system used throughout

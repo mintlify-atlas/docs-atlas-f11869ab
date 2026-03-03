@@ -1,0 +1,216 @@
+---
+title: Raised Button
+description: A beautiful 3D raised button with customizable colors and dynamic text contrast.
+---
+
+A beautiful 3D raised button component with a raised appearance, customizable colors, and automatic text contrast adjustment for optimal readability.
+
+<ComponentPreview name="raised-button/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    <Steps>
+      <Step title="Install the component">
+        Run the following command to install the component:
+
+        ```bash
+        npx gaia-cli add raised-button
+        ```
+      </Step>
+    </Steps>
+  </TabsContent>
+  <TabsContent value="manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install class-variance-authority
+        ```
+      </Step>
+      <Step title="Copy the color utilities">
+        Copy the color utility functions to your project:
+
+        ```typescript
+        // lib/utils/colorUtils.ts
+        export function parseColor(color: string): { r: number; g: number; b: number } | null {
+          // Color parsing logic for hex, rgb, hsl, and named colors
+        }
+
+        export function getLuminance(rgb: { r: number; g: number; b: number }): number {
+          // Calculate relative luminance
+        }
+
+        export function getContrastColor(luminance: number): string {
+          return luminance > 0.5 ? "#000000" : "#ffffff";
+        }
+        ```
+
+        See the [source code](https://github.com/theexperiencecompany/gaia-ui/blob/main/lib/utils/colorUtils.ts) for the complete implementation.
+      </Step>
+      <Step title="Copy the component code">
+        Copy and paste the following code into your project:
+
+        ```tsx
+        // components/ui/raised-button.tsx
+        "use client";
+
+        import { cva, type VariantProps } from "class-variance-authority";
+        import * as React from "react";
+        import { cn } from "@/lib/utils";
+        import {
+          getContrastColor,
+          getLuminance,
+          parseColor,
+        } from "@/lib/utils/colorUtils";
+
+        const buttonVariants = cva(
+          "inline-flex items-center justify-center dark:bg-zinc-500 dark:text-white whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative bg-primary text-primary-foreground hover:bg-primary/90 border border-primary/50 shadow-md before:absolute before:inset-0 before:border-t before:border-white/40 before:bg-gradient-to-b before:from-white/20 before:to-transparent cursor-pointer transition-transform duration-200 active:scale-[0.96] subpixel-antialiased gap-2",
+          {
+            variants: {
+              variant: {
+                default: "",
+              },
+              size: {
+                default: "h-10 px-4 py-2 rounded-xl before:rounded-xl",
+                sm: "h-9 rounded-lg px-3 before:rounded-xl",
+                lg: "h-11 rounded-lg px-8 before:rounded-lg",
+                icon: "h-10 w-10",
+              },
+            },
+            defaultVariants: {
+              variant: "default",
+              size: "default",
+            },
+          },
+        );
+
+        export interface ButtonProps
+          extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+            VariantProps<typeof buttonVariants> {
+          color?: string;
+        }
+
+        const RaisedButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+          ({ className, variant, size, color, style = {}, ...props }, ref) => {
+            const dynamicStyles = React.useMemo(() => {
+              if (!color) return {};
+
+              try {
+                const rgb = parseColor(color);
+                if (!rgb) return {};
+
+                const luminance = getLuminance(rgb);
+                const textColor = getContrastColor(luminance);
+
+                return {
+                  backgroundColor: color,
+                  color: textColor,
+                  borderColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`,
+                  boxShadow: `0 4px 5px 0px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
+                };
+              } catch (e) {
+                console.error("Error processing color:", e);
+                return {};
+              }
+            }, [color]);
+
+            return (
+              <button
+                className={cn(buttonVariants({ variant, size, className }))}
+                ref={ref}
+                style={{
+                  ...style,
+                  ...dynamicStyles,
+                }}
+                {...props}
+              />
+            );
+          },
+        );
+        RaisedButton.displayName = "RaisedButton";
+
+        export { buttonVariants, RaisedButton };
+        ```
+      </Step>
+    </Steps>
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+```tsx
+import { RaisedButton } from "@/components/ui/raised-button";
+
+export default function Example() {
+  return <RaisedButton>Click me</RaisedButton>;
+}
+```
+
+## Custom Colors
+
+Use the `color` prop to apply custom colors. The component automatically adjusts text color for optimal contrast:
+
+```tsx
+<RaisedButton color="#3b82f6">Blue</RaisedButton>
+<RaisedButton color="#ef4444">Red</RaisedButton>
+<RaisedButton color="#10b981">Green</RaisedButton>
+<RaisedButton color="#8b5cf6">Purple</RaisedButton>
+```
+
+## Sizes
+
+<ComponentPreview name="raised-button/sizes" />
+
+```tsx
+<RaisedButton size="sm">Small</RaisedButton>
+<RaisedButton size="default">Default</RaisedButton>
+<RaisedButton size="lg">Large</RaisedButton>
+```
+
+## Props
+
+<ResponseField name="variant" type="string" default="default">
+  The button variant. Currently only supports `default`.
+</ResponseField>
+
+<ResponseField name="size" type="'sm' | 'default' | 'lg' | 'icon'" default="default">
+  The size of the button.
+  - `sm`: Small button (h-9, px-3)
+  - `default`: Default size (h-10, px-4)
+  - `lg`: Large button (h-11, px-8)
+  - `icon`: Square icon button (h-10, w-10)
+</ResponseField>
+
+<ResponseField name="color" type="string">
+  Custom color for the button. Accepts hex colors, rgb, hsl, or CSS color names. The component automatically adjusts text color for optimal contrast.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the button.
+</ResponseField>
+
+<ResponseField name="disabled" type="boolean" default="false">
+  Whether the button is disabled.
+</ResponseField>
+
+## Features
+
+- **3D Raised Appearance**: Elegant shadow and gradient effects create a raised, tactile look
+- **Dynamic Text Contrast**: Automatically calculates the optimal text color (black or white) based on background luminance
+- **Custom Colors**: Support for hex, RGB, HSL, and CSS color names
+- **Accessible**: Proper focus states and keyboard navigation
+- **Responsive**: Subtle scale animation on click
+- **Dark Mode**: Automatically adapts to dark mode themes
+
+## Accessibility
+
+- Full keyboard navigation support
+- Proper focus indicators with `focus-visible`
+- Disabled state handling
+- Semantic HTML button element
+- High contrast text automatically calculated

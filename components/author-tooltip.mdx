@@ -1,0 +1,283 @@
+---
+title: Author Tooltip
+description: An interactive avatar with tooltip showing author information and social links.
+---
+
+<ComponentPreview name="author-tooltip/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add author-tooltip
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install react-icons
+    ```
+
+    2. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/author-tooltip.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+Display author information with an interactive avatar and social links.
+
+```tsx
+import { AuthorTooltip, Author } from "@/components/ui/author-tooltip";
+
+const author: Author = {
+  name: "Jane Smith",
+  avatar: "https://avatar.com/jane.jpg",
+  role: "Software Engineer",
+  github: "https://github.com/janesmith",
+  twitter: "https://twitter.com/janesmith",
+  linkedin: "https://linkedin.com/in/janesmith"
+};
+
+export default function Example() {
+  return <AuthorTooltip author={author} />;
+}
+```
+
+## Features
+
+### Avatar Sizes
+
+Four size options for different contexts:
+
+```tsx
+<AuthorTooltip author={author} avatarSize="sm" />  {/* 32px - Default */}
+<AuthorTooltip author={author} avatarSize="md" />  {/* 40px */}
+<AuthorTooltip author={author} avatarSize="lg" />  {/* 48px */}
+<AuthorTooltip author={author} avatarSize="xl" />  {/* 64px */}
+```
+
+### Social Links
+
+Automatic icon display for social profiles:
+
+```tsx
+const author: Author = {
+  name: "John Doe",
+  avatar: "/avatar.jpg",
+  role: "Designer",
+  github: "https://github.com/johndoe",      // GitHub icon
+  twitter: "https://twitter.com/johndoe",    // Twitter icon
+  linkedin: "https://linkedin.com/in/johndoe" // LinkedIn icon
+};
+
+<AuthorTooltip author={author} />
+```
+
+Only provided links are shown - omitted links hide their icons.
+
+### Custom Trigger
+
+Use your own trigger element instead of the default avatar:
+
+```tsx
+<AuthorTooltip 
+  author={author}
+  trigger={
+    <button className="text-blue-500 hover:underline">
+      View Author
+    </button>
+  }
+/>
+```
+
+### Additional Content
+
+Add custom content to the tooltip:
+
+```tsx
+<AuthorTooltip author={author}>
+  <div className="mt-2 pt-2 border-t">
+    <p className="text-xs text-muted-foreground">
+      Joined March 2024 · 127 contributions
+    </p>
+  </div>
+</AuthorTooltip>
+```
+
+### Avatar Styling
+
+Customize the avatar appearance:
+
+```tsx
+<AuthorTooltip 
+  author={author}
+  avatarClassName="border-4 border-blue-500 shadow-lg"
+/>
+```
+
+### Initials Fallback
+
+Automatic initials when avatar image fails to load:
+
+```tsx
+// If avatar URL fails, shows "JS" for "Jane Smith"
+const author = {
+  name: "Jane Smith",
+  avatar: "https://broken-link.jpg",
+  role: "Developer"
+};
+```
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>author</PropName>
+    <PropType>Author</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Author information object with name, avatar, role, and social links.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>avatarSize</PropName>
+    <PropType>"sm" | "md" | "lg" | "xl"</PropType>
+    <PropDefault>"sm"</PropDefault>
+    <PropDescription>
+      Size of the avatar (sm: 32px, md: 40px, lg: 48px, xl: 64px).
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>avatarClassName</PropName>
+    <PropType>string</PropType>
+    <PropDefault>"cursor-help border-2 border-border"</PropDefault>
+    <PropDescription>
+      Additional CSS classes for the avatar.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>trigger</PropName>
+    <PropType>ReactNode</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Custom trigger element. If not provided, uses the avatar.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>children</PropName>
+    <PropType>ReactNode</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional content to render in the tooltip.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Author Type
+
+```tsx
+interface Author {
+  name: string;       // Display name
+  avatar: string;     // Avatar image URL
+  role: string;       // Job title or role
+  linkedin?: string;  // LinkedIn profile URL
+  twitter?: string;   // Twitter/X profile URL
+  github?: string;    // GitHub profile URL
+}
+```
+
+## Common Use Cases
+
+### Blog Post Byline
+
+```tsx
+<article>
+  <div className="flex items-center gap-2">
+    <AuthorTooltip author={author} />
+    <div>
+      <p className="font-medium">{author.name}</p>
+      <p className="text-sm text-muted-foreground">March 15, 2024</p>
+    </div>
+  </div>
+  <div className="prose">
+    {/* Article content */}
+  </div>
+</article>
+```
+
+### Comment Section
+
+```tsx
+<div className="flex gap-3">
+  <AuthorTooltip author={commenter} avatarSize="md" />
+  <div className="flex-1">
+    <div className="flex items-center gap-2">
+      <span className="font-semibold">{commenter.name}</span>
+      <span className="text-xs text-muted-foreground">2 hours ago</span>
+    </div>
+    <p className="mt-1">{comment.text}</p>
+  </div>
+</div>
+```
+
+### Team Members Grid
+
+```tsx
+<div className="grid grid-cols-4 gap-6">
+  {team.map((member) => (
+    <div key={member.id} className="text-center">
+      <AuthorTooltip author={member} avatarSize="xl" />
+      <p className="mt-2 font-medium">{member.name}</p>
+      <p className="text-sm text-muted-foreground">{member.role}</p>
+    </div>
+  ))}
+</div>
+```
+
+### Inline Mention
+
+```tsx
+<p>
+  Great work by{" "}
+  <AuthorTooltip 
+    author={author}
+    trigger={
+      <span className="font-semibold text-blue-600 cursor-help">
+        @{author.name}
+      </span>
+    }
+  />
+  {" "}on this feature!
+</p>
+```
+
+## Social Icons
+
+The component uses react-icons for social links:
+
+- **LinkedIn**: `FaLinkedin`
+- **Twitter/X**: `FaTwitter`
+- **GitHub**: `FaGithub`
+
+All icons are:
+- 20px (size-5)
+- Clickable with hover effects
+- Open in new tabs
+- Include `rel="noopener noreferrer"`
+
+## Accessibility
+
+- Avatar has proper alt text via `AvatarImage`
+- Social links open in new tabs safely
+- Tooltip accessible via hover and focus
+- Screen readers announce author information
+- Keyboard navigation fully supported

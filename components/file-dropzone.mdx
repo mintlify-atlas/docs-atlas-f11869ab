@@ -1,0 +1,271 @@
+---
+title: File Dropzone
+description: A drag-and-drop file upload zone with animations, file validation, previews, and multiple file support.
+---
+
+<ComponentPreview name="file-dropzone/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add file-dropzone
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install framer-motion
+    ```
+
+    2. This component depends on:
+    ```bash
+    npx gaia-ui add icons
+    ```
+
+    3. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/file-dropzone.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+A beautiful drag-and-drop file upload zone with animations and file management.
+
+```tsx
+import { FileDropzone, DroppedFile } from "@/components/ui/file-dropzone";
+import { useState } from "react";
+
+export default function Example() {
+  const [files, setFiles] = useState<DroppedFile[]>([]);
+
+  return (
+    <FileDropzone
+      onFilesDropped={setFiles}
+      accept="image/*"
+      maxFiles={5}
+      maxSize={10 * 1024 * 1024} // 10MB
+    />
+  );
+}
+```
+
+## Features
+
+### Drag & Drop
+
+Interactive drag-and-drop with animated feedback:
+
+- Hover effect when dragging files over the zone
+- Smooth animations using Framer Motion
+- Visual indicators showing accepted file types and size limits
+
+### File Type Validation
+
+Restrict accepted file types:
+
+```tsx
+{/* Images only */}
+<FileDropzone accept="image/*" onFilesDropped={setFiles} />
+
+{/* PDFs only */}
+<FileDropzone accept=".pdf" onFilesDropped={setFiles} />
+
+{/* Multiple types */}
+<FileDropzone 
+  accept="image/*,.pdf,.doc,.docx"
+  acceptedFileTypes={["Images", "PDF", "Word"]}
+  onFilesDropped={setFiles}
+/>
+```
+
+### Size & Quantity Limits
+
+```tsx
+<FileDropzone
+  maxSize={5 * 1024 * 1024}  // 5MB per file
+  maxFiles={3}                // Maximum 3 files
+  onFilesDropped={setFiles}
+/>
+```
+
+### Single File Mode
+
+```tsx
+<FileDropzone
+  multiple={false}
+  onFilesDropped={(files) => {
+    // Always receives array with single file
+    const file = files[0];
+  }}
+/>
+```
+
+### Image Previews
+
+Automatic thumbnail generation for images:
+
+```tsx
+const [files, setFiles] = useState<DroppedFile[]>([]);
+
+<FileDropzone
+  accept="image/*"
+  onFilesDropped={setFiles}
+/>
+
+// Each file in the array has:
+// - file: File object
+// - preview: string (URL for images)
+// - id: string (unique identifier)
+```
+
+### Initial Files
+
+Start with pre-loaded files:
+
+```tsx
+const initialFiles: DroppedFile[] = [
+  {
+    id: "1",
+    file: existingFile,
+    preview: "https://example.com/image.jpg"
+  }
+];
+
+<FileDropzone
+  initialFiles={initialFiles}
+  onFilesDropped={setFiles}
+/>
+```
+
+### Custom Content
+
+Replace the default UI:
+
+```tsx
+<FileDropzone onFilesDropped={setFiles}>
+  <div className="p-8">
+    <h3>Drop your files here</h3>
+    <p>Or click to browse</p>
+  </div>
+</FileDropzone>
+```
+
+### Error Handling
+
+Built-in error messages for validation failures:
+
+- File size exceeded
+- Too many files
+- Single file limit exceeded
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>onFilesDropped</PropName>
+    <PropType>(files: DroppedFile[]) =&gt; void</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Callback fired when files are added or removed.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>accept</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Accepted file types (e.g., "image/*", ".pdf").
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>multiple</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>true</PropDefault>
+    <PropDescription>
+      Allow multiple file selection.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>maxSize</PropName>
+    <PropType>number</PropType>
+    <PropDefault>10485760 (10MB)</PropDefault>
+    <PropDescription>
+      Maximum file size in bytes.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>maxFiles</PropName>
+    <PropType>number</PropType>
+    <PropDefault>10</PropDefault>
+    <PropDescription>
+      Maximum number of files allowed.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>disabled</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>false</PropDefault>
+    <PropDescription>
+      Disable the dropzone.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>acceptedFileTypes</PropName>
+    <PropType>string[]</PropType>
+    <PropDefault>["*"]</PropDefault>
+    <PropDescription>
+      Display names for accepted file types.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>initialFiles</PropName>
+    <PropType>DroppedFile[]</PropType>
+    <PropDefault>[]</PropDefault>
+    <PropDescription>
+      Pre-loaded files to display initially.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>children</PropName>
+    <PropType>ReactNode</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Custom content to replace the default UI.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## DroppedFile Type
+
+```tsx
+interface DroppedFile {
+  id: string;          // Unique identifier
+  file: File;          // Native File object
+  preview?: string;    // Data URL for image previews
+}
+```
+
+## Accessibility
+
+- Hidden file input for keyboard navigation
+- Proper `aria-label` on input
+- Visual feedback for drag states
+- Disabled state properly indicated
+- Works with keyboard (Tab to focus, Enter to open file dialog)

@@ -1,0 +1,354 @@
+---
+title: Tool Calls Section
+description: An expandable section showing AI agent tool usage with icons, inputs, and outputs.
+---
+
+The Tool Calls Section component displays a collapsible timeline of tools that an AI agent has used during a conversation. It features stacked icons, expandable details, and support for custom integrations.
+
+## Preview
+
+<ComponentPreview name="tool-calls-section-demo" />
+
+## Features
+
+- **Collapsible timeline** - Expandable list of tool calls with smooth animations
+- **Stacked icons** - Visual preview showing tool categories at a glance
+- **Integration icons** - Support for custom integration icons (GitHub, Linear, Slack, etc.)
+- **Input/output display** - Expandable details showing tool parameters and results
+- **Category grouping** - Automatic deduplication and visual organization
+- **Custom rendering** - Override icon and content rendering
+- **Markdown support** - Format structured data and markdown content
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx gaia-ui add tool-calls-section
+```
+
+This will install the component along with its dependencies: `icons` and `compact-markdown`.
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+**Install dependencies:**
+
+```bash
+npm install @hugeicons/react @hugeicons/core-free-icons
+```
+
+**Copy the source files:**
+
+1. Copy `registry/new-york/ui/tool-calls-section.tsx`
+2. Copy `registry/new-york/ui/compact-markdown.tsx`
+3. Copy `registry/new-york/ui/icons.tsx`
+4. Copy `lib/utils/tool-icons.tsx`
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+import type { ToolCallEntry } from "@/components/ui/tool-calls-section";
+
+const toolCalls: ToolCallEntry[] = [
+  {
+    tool_name: "search_web",
+    tool_category: "search",
+    message: "Searched for React best practices",
+    inputs: { query: "React best practices 2024" },
+    output: "Found 10 relevant articles..."
+  },
+  {
+    tool_name: "create_document",
+    tool_category: "documents",
+    message: "Created a new document",
+    inputs: { title: "React Guide", content: "..." },
+    output: "Document created successfully"
+  }
+];
+
+export function AgentActivity() {
+  return <ToolCallsSection toolCalls={toolCalls} />;
+}
+```
+
+### With Custom Integrations
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+import type { ToolCallEntry, IntegrationInfo } from "@/components/ui/tool-calls-section";
+
+const integrations = new Map<string, IntegrationInfo>([
+  ["github", { iconUrl: "/icons/github.png", name: "GitHub" }],
+  ["linear", { iconUrl: "/icons/linear.svg", name: "Linear" }]
+]);
+
+const toolCalls: ToolCallEntry[] = [
+  {
+    tool_name: "create_issue",
+    tool_category: "github",
+    message: "Created a new GitHub issue",
+    inputs: {
+      title: "Bug: Login button not working",
+      body: "Users are unable to click the login button..."
+    },
+    output: "Issue #123 created successfully"
+  }
+];
+
+export function IntegrationActivity() {
+  return (
+    <ToolCallsSection
+      toolCalls={toolCalls}
+      integrations={integrations}
+    />
+  );
+}
+```
+
+### With Icon URLs
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+
+const toolCalls: ToolCallEntry[] = [
+  {
+    tool_name: "send_message",
+    tool_category: "slack",
+    icon_url: "https://example.com/slack-icon.svg",
+    integration_name: "Slack",
+    message: "Sent a message to #general",
+    inputs: { channel: "#general", text: "Hello team!" },
+    output: "Message sent successfully"
+  }
+];
+
+export function SlackActivity() {
+  return <ToolCallsSection toolCalls={toolCalls} />;
+}
+```
+
+### Default Expanded
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+
+export function ExpandedView() {
+  return (
+    <ToolCallsSection
+      toolCalls={toolCalls}
+      defaultExpanded={true}
+    />
+  );
+}
+```
+
+### Custom Icon Rendering
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+import type { ToolCallEntry } from "@/components/ui/tool-calls-section";
+
+const customRenderIcon = (call: ToolCallEntry, size: number) => {
+  return (
+    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500">
+      <span className="text-white text-xs font-bold">
+        {call.tool_name.charAt(0).toUpperCase()}
+      </span>
+    </div>
+  );
+};
+
+export function CustomIcons() {
+  return (
+    <ToolCallsSection
+      toolCalls={toolCalls}
+      renderIcon={customRenderIcon}
+    />
+  );
+}
+```
+
+### Custom Content Rendering
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+
+const customRenderContent = (content: unknown) => {
+  if (typeof content === "object") {
+    return (
+      <div className="bg-zinc-900 rounded-lg p-3 text-xs">
+        <pre className="text-zinc-300">
+          {JSON.stringify(content, null, 2)}
+        </pre>
+      </div>
+    );
+  }
+  return <p className="text-sm text-zinc-400">{String(content)}</p>;
+};
+
+export function CustomContent() {
+  return (
+    <ToolCallsSection
+      toolCalls={toolCalls}
+      renderContent={customRenderContent}
+    />
+  );
+}
+```
+
+### Hide Category Labels
+
+```tsx
+import { ToolCallsSection } from "@/components/ui/tool-calls-section";
+
+const toolCalls: ToolCallEntry[] = [
+  {
+    tool_name: "search_web",
+    tool_category: "search",
+    message: "Searched the web",
+    show_category: false // Hide category label
+  }
+];
+
+export function NoCategories() {
+  return <ToolCallsSection toolCalls={toolCalls} />;
+}
+```
+
+## Props
+
+<ParamField path="toolCalls" type="ToolCallEntry[]" required>
+  Array of tool call entries to display.
+</ParamField>
+
+<ParamField path="integrations" type="Map<string, IntegrationInfo>">
+  Map of integration IDs to their icon URLs and display names.
+</ParamField>
+
+<ParamField path="maxIconsToShow" type="number" default="10">
+  Maximum number of icons to show in the stacked preview.
+</ParamField>
+
+<ParamField path="defaultExpanded" type="boolean" default="false">
+  Whether to start with the section expanded.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the container.
+</ParamField>
+
+<ParamField path="iconSize" type="number" default="21">
+  Size of the tool icons in pixels.
+</ParamField>
+
+<ParamField path="renderIcon" type="(call: ToolCallEntry, size: number) => ReactNode">
+  Custom icon renderer function.
+</ParamField>
+
+<ParamField path="renderContent" type="(content: unknown) => ReactNode">
+  Custom content renderer for inputs/outputs.
+</ParamField>
+
+## Type Definitions
+
+### ToolCallEntry
+
+```tsx
+interface ToolCallEntry {
+  /** Name of the tool that was called */
+  tool_name: string;
+  /** Category/integration the tool belongs to */
+  tool_category: string;
+  /** Human-readable message describing what the tool did */
+  message?: string;
+  /** Whether to show the category label (default: true) */
+  show_category?: boolean;
+  /** Unique ID for this tool call */
+  tool_call_id?: string;
+  /** Input parameters passed to the tool */
+  inputs?: Record<string, unknown>;
+  /** Output/result from the tool */
+  output?: string;
+  /** URL to custom icon for integrations */
+  icon_url?: string;
+  /** Friendly name for the integration */
+  integration_name?: string;
+}
+```
+
+### IntegrationInfo
+
+```tsx
+interface IntegrationInfo {
+  iconUrl?: string;
+  name?: string;
+}
+```
+
+## Built-in Categories
+
+The component includes built-in icons for common categories:
+
+- **Integrations**: `gmail`, `google_calendar`, `github`, `linear`, `slack`, `notion`, `search`
+- **General**: `todos`, `reminders`, `documents`, `development`, `memory`, `creative`
+- **Agent Tools**: `handoff`, `retrieve_tools`, `executor`
+
+Each category has its own icon and color scheme that matches the Gaia UI design system.
+
+## Styling Details
+
+### Icon Stacking
+
+- Icons are deduplicated by category to avoid visual clutter
+- Stacked with alternating rotation (±8deg) for depth effect
+- Maximum of 10 icons shown by default (configurable)
+- Overflow count displayed as "+N" badge
+
+### Expansion Animation
+
+- Smooth height transition (200ms duration)
+- Fade in/out effect on content
+- Chevron rotation indicator
+
+### Timeline Connector
+
+- Vertical line connects consecutive tool calls
+- Uses theme-aware colors (zinc-300/zinc-700)
+
+## Accessibility
+
+- Keyboard accessible expand/collapse buttons
+- Proper button semantics with `type="button"`
+- Semantic HTML structure
+- Screen reader friendly labels
+- Focus indicators on interactive elements
+
+## Design Notes
+
+- Follows Gaia UI's flat design principles (no heavy borders)
+- Uses subtle backgrounds and shadows for depth
+- Category icons use background colors with 20% opacity for consistency
+- Integration icons displayed on neutral backgrounds
+- Compact display to minimize vertical space
+
+## Related Components
+
+- Compact Markdown - Internal component used for rendering inputs/outputs (included with tool-calls-section)
+- [Icons](/components/icons) - Icon system
+- [Composer](/components/composer) - Chat input component

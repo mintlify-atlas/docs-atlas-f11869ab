@@ -1,0 +1,437 @@
+---
+title: "Pricing Card"
+description: "A beautiful glassmorphism pricing card with nested design, feature lists, and customizable accent colors."
+---
+
+The Pricing Card displays pricing plans with a stunning nested card design, featuring glassmorphism effects, customizable colors, and dynamic button states.
+
+## Preview
+
+<CodeGroup>
+```tsx Free Plan
+import { PricingCard } from "@/components/ui/pricing-card";
+
+export default function Example() {
+  return (
+    <PricingCard
+      title="Free"
+      price={0}
+      description="Perfect for trying out our platform"
+      features={[
+        "Up to 3 projects",
+        "Basic analytics",
+        "Community support",
+        "1 GB storage"
+      ]}
+    />
+  );
+}
+```
+
+```tsx Pro Plan
+import { PricingCard } from "@/components/ui/pricing-card";
+
+const features = [
+  "Unlimited projects",
+  "Advanced analytics",
+  "Priority support",
+  "100 GB storage",
+  "Custom domain",
+  "API access"
+];
+
+export default function Example() {
+  return (
+    <PricingCard
+      title="Pro"
+      price={29}
+      originalPrice={49}
+      description="For professionals and growing teams"
+      features={features}
+      isMonthly={false}
+      accentColor="#00bbff"
+      onButtonClick={() => console.log("Upgrade to Pro")}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/pricing-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add dependencies">
+        This component requires:
+        - [RaisedButton](/components/raised-button)
+        - [Icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy `pricing-card.tsx` to your components directory
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Pricing Card
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+
+<PricingCard
+  title="Starter"
+  price={9.99}
+  description="Great for individuals"
+  features={[
+    "10 projects",
+    "Basic features",
+    "Email support"
+  ]}
+/>
+```
+
+### Monthly vs Yearly
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+import { useState } from "react";
+
+function PricingTable() {
+  const [isMonthly, setIsMonthly] = useState(true);
+
+  return (
+    <>
+      {/* Toggle switch for monthly/yearly */}
+      <PricingCard
+        title="Pro"
+        price={isMonthly ? 29 : 290}
+        originalPrice={isMonthly ? 29 : 348}
+        isMonthly={isMonthly}
+        features={["All features"]}
+      />
+    </>
+  );
+}
+```
+
+### Current Plan Badge
+
+```tsx
+<PricingCard
+  title="Pro"
+  price={29}
+  isCurrentPlan={true}
+  features={["Current plan features"]}
+/>
+```
+
+### Custom Accent Color
+
+```tsx
+<PricingCard
+  title="Enterprise"
+  price={99}
+  accentColor="#ff6b6b"
+  features={["Everything included"]}
+/>
+```
+
+### With Custom Features
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+import { StarIcon } from "@/components/icons";
+
+const customFeatures = [
+  {
+    text: "Premium feature 1",
+    icon: <StarIcon className="text-yellow-500" size={18} />
+  },
+  {
+    text: "Premium feature 2",
+    icon: <StarIcon className="text-yellow-500" size={18} />
+  },
+  "Standard feature 1",
+  "Standard feature 2"
+];
+
+<PricingCard
+  title="Premium"
+  price={49}
+  features={customFeatures}
+/>
+```
+
+### Loading State
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+import { useState } from "react";
+
+function PricingWithCheckout() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUpgrade = async () => {
+    setIsLoading(true);
+    await processPayment();
+    setIsLoading(false);
+  };
+
+  return (
+    <PricingCard
+      title="Pro"
+      price={29}
+      features={["Pro features"]}
+      onButtonClick={handleUpgrade}
+      isLoading={isLoading}
+    />
+  );
+}
+```
+
+## Props
+
+<ResponseField name="title" type="string" required>
+  Plan name (e.g., "Free", "Pro", "Enterprise")
+</ResponseField>
+
+<ResponseField name="price" type="number" required>
+  Price amount. Use `0` for free plans. Supports decimals (e.g., `9.99`).
+</ResponseField>
+
+<ResponseField name="currency" type="string" default="'$'">
+  Currency symbol to display before the price
+</ResponseField>
+
+<ResponseField name="originalPrice" type="number">
+  Original price before discount. Shows with strikethrough when provided (only for yearly plans).
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Plan description/subtitle shown below the title
+</ResponseField>
+
+<ResponseField name="features" type="(string | PricingFeature)[]">
+  Array of features included in the plan. Can be strings or objects with custom icons.
+  
+  <Expandable title="PricingFeature properties">
+    <ResponseField name="text" type="string" required>
+      Feature description text
+    </ResponseField>
+    
+    <ResponseField name="icon" type="ReactNode">
+      Custom icon component. Defaults to a green checkmark.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="featuresTitle" type="ReactNode">
+  Custom heading above the features list
+</ResponseField>
+
+<ResponseField name="isMonthly" type="boolean" default="true">
+  Whether the price is monthly or yearly. Affects the billing period text.
+</ResponseField>
+
+<ResponseField name="isCurrentPlan" type="boolean" default="false">
+  Shows a "Current Plan" badge and disables the button
+</ResponseField>
+
+<ResponseField name="buttonLabel" type="string">
+  Custom button text. Defaults to:
+  - "Current Plan" if `isCurrentPlan` is true
+  - "Get Started" if price is 0
+  - "Upgrade" otherwise
+</ResponseField>
+
+<ResponseField name="onButtonClick" type="() => void">
+  Callback when the button is clicked
+</ResponseField>
+
+<ResponseField name="isDisabled" type="boolean" default="false">
+  Whether the button is disabled
+</ResponseField>
+
+<ResponseField name="isLoading" type="boolean" default="false">
+  Whether the button shows a loading state
+</ResponseField>
+
+<ResponseField name="accentColor" type="string" default="'#00bbff'">
+  CSS color value for the button background. Free plans always use dark gray.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Glassmorphism Design
+
+The card features a stunning nested design:
+- Outer card with semi-transparent white background
+- Inner nested card with glass effect
+- Backdrop blur for modern appearance
+- Works beautifully on any background
+
+### Dynamic Button Styling
+
+The button automatically adapts:
+- Free plans get a neutral dark gray button
+- Paid plans use the custom accent color
+- Current plan shows special badge and disabled state
+- Loading state with "Loading..." text
+
+### Price Formatting
+
+Prices are automatically formatted:
+- Whole numbers: "$29"
+- Decimals: "$9.99"
+- Free: "$0"
+- Respects custom currency symbols
+
+### Discount Display
+
+When `originalPrice` is provided and `isMonthly` is false:
+- Shows original price with strikethrough
+- Displays discounted price prominently
+- Highlights savings for annual plans
+
+### Feature Icons
+
+Each feature can have:
+- Default green checkmark icon
+- Custom icon component
+- Consistent 18px size
+- Proper spacing and alignment
+
+## Examples
+
+### Complete Pricing Table
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+import { useState } from "react";
+
+function PricingPage() {
+  const [isMonthly, setIsMonthly] = useState(true);
+  const [currentPlan, setCurrentPlan] = useState("free");
+
+  const plans = [
+    {
+      id: "free",
+      title: "Free",
+      monthlyPrice: 0,
+      yearlyPrice: 0,
+      description: "Perfect for trying out",
+      features: [
+        "3 projects",
+        "Basic analytics",
+        "Community support"
+      ]
+    },
+    {
+      id: "pro",
+      title: "Pro",
+      monthlyPrice: 29,
+      yearlyPrice: 290,
+      originalYearlyPrice: 348,
+      description: "For professionals",
+      features: [
+        "Unlimited projects",
+        "Advanced analytics",
+        "Priority support",
+        "100 GB storage"
+      ],
+      accentColor: "#00bbff"
+    },
+    {
+      id: "enterprise",
+      title: "Enterprise",
+      monthlyPrice: 99,
+      yearlyPrice: 990,
+      originalYearlyPrice: 1188,
+      description: "For large teams",
+      features: [
+        "Everything in Pro",
+        "Unlimited storage",
+        "Dedicated support",
+        "Custom integrations",
+        "SLA guarantee"
+      ],
+      accentColor: "#8b5cf6"
+    }
+  ];
+
+  return (
+    <div className="grid gap-6 md:grid-cols-3">
+      {plans.map(plan => (
+        <PricingCard
+          key={plan.id}
+          title={plan.title}
+          price={isMonthly ? plan.monthlyPrice : plan.yearlyPrice}
+          originalPrice={!isMonthly ? plan.originalYearlyPrice : undefined}
+          description={plan.description}
+          features={plan.features}
+          isMonthly={isMonthly}
+          isCurrentPlan={currentPlan === plan.id}
+          accentColor={plan.accentColor}
+          onButtonClick={() => handleUpgrade(plan.id)}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### With Custom Features Section
+
+```tsx
+import { PricingCard } from "@/components/ui/pricing-card";
+
+const featuresTitle = (
+  <div className="mb-3">
+    <h4 className="font-semibold text-zinc-900 dark:text-white">
+      What's included:
+    </h4>
+  </div>
+);
+
+<PricingCard
+  title="Premium"
+  price={49}
+  features={["Feature 1", "Feature 2"]}
+  featuresTitle={featuresTitle}
+/>
+```
+
+## Styling
+
+The pricing card uses:
+- Glassmorphism with backdrop blur
+- Nested card design for depth
+- White/transparent backgrounds
+- Rounded corners (rounded-3xl)
+- Shadow effects for elevation
+- Smooth transitions
+
+<Tip>
+  Use the same accent color across your brand for consistency, or different colors to differentiate plan tiers.
+</Tip>
+
+<Note>
+  The raised button component requires the `colorUtils` helper for dynamic text contrast. Make sure this is installed.
+</Note>

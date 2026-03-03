@@ -1,0 +1,296 @@
+---
+title: Icons
+description: Hugeicons wrapper for all components. Uses free icons by default - upgrade to Pro by changing imports.
+---
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the icons package using the CLI:
+    ```bash
+    npx gaia-ui add icons
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install @hugeicons/react @hugeicons/core-free-icons
+    ```
+
+    2. Create the icons wrapper file:
+    ```tsx
+    // registry/new-york/ui/icons.tsx
+    export * from "@hugeicons/core-free-icons";
+    export { HugeiconsIcon } from "@hugeicons/react";
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+All Gaia UI components use Hugeicons through this wrapper.
+
+```tsx
+import { HugeiconsIcon, Search01Icon, ChevronRightIcon } from "@/components/icons";
+
+export default function Example() {
+  return (
+    <div className="flex gap-2">
+      <HugeiconsIcon icon={Search01Icon} size={20} />
+      <HugeiconsIcon icon={ChevronRightIcon} size={16} />
+    </div>
+  );
+}
+```
+
+## Features
+
+### Consistent API
+
+All icons use the same component:
+
+```tsx
+<HugeiconsIcon 
+  icon={IconName} 
+  size={24}              // Size in pixels
+  strokeWidth={1.5}      // Optional stroke width
+  className="text-blue-500"  // Optional styling
+/>
+```
+
+### Size Control
+
+```tsx
+<HugeiconsIcon icon={HomeIcon} size={16} />  {/* Small */}
+<HugeiconsIcon icon={HomeIcon} size={20} />  {/* Medium */}
+<HugeiconsIcon icon={HomeIcon} size={24} />  {/* Large */}
+<HugeiconsIcon icon={HomeIcon} size={32} />  {/* Extra Large */}
+```
+
+### Stroke Width
+
+Adjust the icon weight:
+
+```tsx
+<HugeiconsIcon icon={BoldIcon} strokeWidth={1} />    {/* Thin */}
+<HugeiconsIcon icon={BoldIcon} strokeWidth={1.5} />  {/* Regular */}
+<HugeiconsIcon icon={BoldIcon} strokeWidth={2} />    {/* Medium */}
+<HugeiconsIcon icon={BoldIcon} strokeWidth={2.5} />  {/* Bold */}
+```
+
+### Custom Styling
+
+```tsx
+<HugeiconsIcon 
+  icon={HeartIcon} 
+  size={24}
+  className="text-red-500 hover:text-red-600 transition-colors"
+/>
+```
+
+## Upgrading to Pro
+
+To access 30,000+ premium icons:
+
+1. Purchase Hugeicons Pro
+2. Install the Pro package:
+```bash
+npm install @hugeicons/core-icons
+```
+
+3. Update the icons wrapper:
+```tsx
+// registry/new-york/ui/icons.tsx
+export * from "@hugeicons/core-icons";  // Changed from core-free-icons
+export { HugeiconsIcon } from "@hugeicons/react";
+```
+
+4. Restart your dev server
+
+All components will automatically use Pro icons!
+
+## Commonly Used Icons
+
+Here are icons frequently used in Gaia UI:
+
+### Navigation
+```tsx
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ArrowRight01Icon,
+  Menu01Icon,
+  Cancel01Icon,
+} from "@/components/icons";
+```
+
+### Actions
+```tsx
+import {
+  Copy01Icon,
+  Download01Icon,
+  Upload01Icon,
+  Tick02Icon,
+  Delete02Icon,
+  Edit02Icon,
+} from "@/components/icons";
+```
+
+### Media
+```tsx
+import {
+  Image01Icon,
+  File01Icon,
+  Video01Icon,
+  MusicNote01Icon,
+  DocumentCodeIcon,
+} from "@/components/icons";
+```
+
+### UI Elements
+```tsx
+import {
+  Search01Icon,
+  Filter01Icon,
+  Settings01Icon,
+  Loading03Icon,
+  AlertCircleIcon,
+  CheckmarkCircle02Icon,
+} from "@/components/icons";
+```
+
+### Communication
+```tsx
+import {
+  Mail01Icon,
+  MessageIcon,
+  NotificationIcon,
+  Share01Icon,
+} from "@/components/icons";
+```
+
+## Icon Naming Convention
+
+Hugeicons follow a consistent naming pattern:
+
+- **Base name**: Describes the icon (e.g., `Arrow`, `Search`, `File`)
+- **Variant number**: Multiple versions of similar icons (e.g., `01`, `02`, `03`)
+- **Suffix**: `Icon` at the end
+
+Examples:
+- `Search01Icon`, `Search02Icon`
+- `Arrow01Icon`, `Arrow02Icon`
+- `Home01Icon`, `Home02Icon`
+
+## Finding Icons
+
+To find available icons:
+
+1. **Browse the collection**: Visit [hugeicons.com](https://hugeicons.com)
+2. **Search in your IDE**: Type `Icon` and use autocomplete
+3. **Check the docs**: See the full list in `@hugeicons/core-free-icons`
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>icon</PropName>
+    <PropType>HugeiconsIcon</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      The icon component to render.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>size</PropName>
+    <PropType>number</PropType>
+    <PropDefault>24</PropDefault>
+    <PropDescription>
+      Icon size in pixels.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>strokeWidth</PropName>
+    <PropType>number</PropType>
+    <PropDefault>1.5</PropDefault>
+    <PropDescription>
+      Stroke width for the icon.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Best Practices
+
+### Size Guidelines
+
+- **16px**: Inline text icons, compact UIs
+- **20px**: Buttons, form inputs, navigation
+- **24px**: Main UI elements, cards, lists
+- **32px+**: Hero sections, empty states, large CTAs
+
+### Color Usage
+
+Icons inherit text color by default:
+
+```tsx
+<div className="text-zinc-500">
+  <HugeiconsIcon icon={InfoIcon} size={20} />
+  {/* Icon will be zinc-500 */}
+</div>
+
+<div className="text-blue-600">
+  <HugeiconsIcon icon={LinkIcon} size={20} />
+  {/* Icon will be blue-600 */}
+</div>
+```
+
+### Accessibility
+
+Add labels for standalone icons:
+
+```tsx
+<button aria-label="Search">
+  <HugeiconsIcon icon={Search01Icon} size={20} aria-hidden="true" />
+</button>
+
+<button>
+  <HugeiconsIcon icon={Delete02Icon} size={16} aria-hidden="true" />
+  <span>Delete</span>
+</button>
+```
+
+## Performance
+
+The icons wrapper enables tree-shaking:
+
+- Only imported icons are bundled
+- No impact on bundle size for unused icons
+- Minimal runtime overhead
+
+## TypeScript Support
+
+Full TypeScript support out of the box:
+
+```tsx
+import { HugeiconsIcon, Search01Icon } from "@/components/icons";
+import type { HugeiconsIconProps } from "@hugeicons/react";
+
+const MyIcon: React.FC<HugeiconsIconProps> = (props) => {
+  return <HugeiconsIcon icon={Search01Icon} {...props} />;
+};
+```

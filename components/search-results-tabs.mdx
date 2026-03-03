@@ -1,0 +1,273 @@
+---
+title: Search Results Tabs
+description: A beautiful component for displaying search results with web pages, images, and news in an organized, interactive layout.
+---
+
+A comprehensive search results display component that beautifully presents web pages, images, and news articles with animated interactions and rich metadata.
+
+<ComponentPreview name="search-results-tabs/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    <Steps>
+      <Step title="Install the component">
+        Run the following command to install the component:
+
+        ```bash
+        npx gaia-cli add search-results-tabs
+        ```
+
+        This will also install required dependencies including `framer-motion` and the `icons` component.
+      </Step>
+    </Steps>
+  </TabsContent>
+  <TabsContent value="manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install framer-motion
+        ```
+      </Step>
+      <Step title="Install icons">
+        ```bash
+        npx gaia-cli add icons
+        ```
+      </Step>
+      <Step title="Install shadcn/ui components">
+        The component uses several shadcn/ui primitives:
+
+        ```bash
+        npx shadcn-ui@latest add button popover skeleton
+        ```
+      </Step>
+      <Step title="Copy the component code">
+        Copy and paste the component code from the [source file](https://github.com/theexperiencecompany/gaia-ui/blob/main/registry/new-york/ui/search-results-tabs.tsx).
+      </Step>
+    </Steps>
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+```tsx
+import { SearchResultsTabs } from "@/components/ui/search-results-tabs";
+
+const searchResults = {
+  web: [
+    {
+      title: "Example Page",
+      url: "https://example.com",
+      content: "This is an example search result description.",
+      date: "2024-03-01",
+    },
+  ],
+  images: [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg",
+  ],
+  news: [
+    {
+      title: "Breaking News",
+      url: "https://news.example.com/article",
+      content: "Article summary goes here.",
+      score: 0.95,
+      date: "2024-03-03",
+    },
+  ],
+};
+
+export default function Example() {
+  return (
+    <SearchResultsTabs
+      search_results={searchResults}
+      onImageClick={(url) => console.log("Image clicked:", url)}
+    />
+  );
+}
+```
+
+## Web Results Only
+
+<ComponentPreview name="search-results-tabs/web-only" />
+
+Display only web results:
+
+```tsx
+<SearchResultsTabs
+  search_results={{
+    web: [
+      // web results array
+    ],
+  }}
+/>
+```
+
+## With News
+
+<ComponentPreview name="search-results-tabs/news" />
+
+Include news articles with relevance scores:
+
+```tsx
+<SearchResultsTabs
+  search_results={{
+    web: [/* web results */],
+    news: [
+      {
+        title: "Article Title",
+        url: "https://...",
+        content: "Summary",
+        score: 0.92,
+        date: "2024-03-03",
+      },
+    ],
+  }}
+/>
+```
+
+## With Image Click Handler
+
+<ComponentPreview name="search-results-tabs/with-image-click" />
+
+Handle image clicks for lightbox or other interactions:
+
+```tsx
+<SearchResultsTabs
+  search_results={searchResults}
+  onImageClick={(imageUrl) => {
+    // Open lightbox, preview, etc.
+    console.log("Clicked:", imageUrl);
+  }}
+/>
+```
+
+## Props
+
+<ResponseField name="search_results" type="SearchResults" required>
+  Object containing search results with optional `web`, `images`, and `news` arrays.
+</ResponseField>
+
+<ResponseField name="onImageClick" type="(imageUrl: string) => void">
+  Optional callback function called when an image is clicked. Receives the image URL as a parameter.
+</ResponseField>
+
+## Types
+
+```typescript
+export interface WebResult {
+  title: string;
+  url: string;
+  content: string;
+  date?: string;
+}
+
+export interface ImageResult {
+  url: string;
+  title?: string;
+}
+
+export interface NewsResult {
+  title: string;
+  url: string;
+  content: string;
+  score?: number;
+  date?: string;
+}
+
+export interface SearchResults {
+  web?: WebResult[];
+  images?: string[] | ImageResult[];
+  news?: NewsResult[];
+}
+
+interface SearchResultsTabsProps {
+  search_results: SearchResults;
+  onImageClick?: (imageUrl: string) => void;
+}
+```
+
+## Features
+
+### Web Results
+- **Popover Display**: Web results shown in a compact popover button
+- **Favicon Integration**: Automatically fetches and displays site favicons
+- **Preview Stacking**: Multiple favicons stacked for visual appeal
+- **Metadata**: Shows domain, date, and truncated descriptions
+- **External Links**: Opens in new tabs with proper security attributes
+
+### Image Results
+- **Validation**: Automatically validates image URLs before display
+- **Lazy Loading**: Images load progressively with skeleton loaders
+- **Animated Entrance**: Staggered fade-in animations with framer-motion
+- **3D Rotation**: Alternating rotation effects on hover
+- **Z-index Management**: Hovered images come to the front
+- **Click Handler**: Optional callback for image interactions
+- **Responsive**: Adapts to different screen sizes
+
+### News Results
+- **Relevance Scores**: Display confidence scores for news articles
+- **Date Formatting**: Automatically formats dates
+- **Truncated Content**: Uses `line-clamp` for clean previews
+- **Hover Effects**: Smooth transitions on interaction
+- **Icon Integration**: News icon from Hugeicons library
+
+## Image Validation
+
+The component includes built-in image validation that:
+- Attempts to load each image URL
+- Filters out broken or invalid images
+- Has a 5-second timeout per image
+- Only displays successfully loaded images
+- Shows nothing if no valid images exist
+
+## Styling
+
+### Web Results Button
+- Compact button with favicon stack
+- Semi-transparent background with backdrop blur
+- Smooth hover transitions
+- Popover with max-width and scrollable content
+
+### Image Grid
+- Overlapping images with negative space (`-space-x-15`)
+- Alternating rotation angles
+- Smooth scale and blur animations
+- Dynamic z-index for hover states
+
+### News Cards
+- Card-based layout with borders
+- Subtle shadows that grow on hover
+- Truncated content for consistent heights
+- Metadata display (score and date)
+
+## Accessibility
+
+- Semantic HTML structure
+- External links with `rel="noopener noreferrer"`
+- Alt text for all images
+- Keyboard navigation support through shadcn/ui components
+- Loading states communicated visually
+- Error handling for failed image loads
+
+## Performance
+
+- Image validation runs in parallel with Promise.all
+- Timeout prevents hanging on slow images
+- Lazy loading with Next.js Image component
+- Priority loading for first 3 images
+- Component cleanup prevents memory leaks
+- Efficient re-renders with React hooks
+
+## Common Use Cases
+
+1. **AI Search Results**: Display results from AI-powered search engines
+2. **Content Discovery**: Show related articles, images, and news
+3. **Research Tools**: Present comprehensive search data
+4. **News Aggregators**: Combine multiple news sources
+5. **Image Galleries**: Display validated image collections

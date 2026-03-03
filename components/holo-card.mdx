@@ -1,0 +1,462 @@
+---
+title: "Holo Card"
+description: "An interactive 3D holographic profile card with tilt effects, sparkle animations, and flip functionality."
+---
+
+The Holo Card creates a stunning 3D holographic effect with mouse/touch tracking, tilt animations, sparkle effects, and a flippable design showing both front and back content.
+
+## Preview
+
+<CodeGroup>
+```tsx Basic
+import { HoloCard } from "@/components/ui/holo-card";
+
+const profileData = {
+  name: "Alex Chen",
+  subtitle: "Full Stack Developer",
+  description: "Passionate about creating beautiful, functional web experiences with modern technologies.",
+  primaryId: "12345",
+  secondaryInfo: "Member since 2024",
+  backgroundImage: "https://example.com/background.jpg",
+  badge: "Pro Member",
+  overlayColor: "#3b82f6",
+  overlayOpacity: 30
+};
+
+export default function Example() {
+  return <HoloCard data={profileData} />;
+}
+```
+
+```tsx Static (No Flip)
+import { HoloCard } from "@/components/ui/holo-card";
+
+// Force front side for static display
+<HoloCard 
+  data={profileData} 
+  forceSide="front"
+  showSparkles={false}
+/>
+
+// Force back side
+<HoloCard 
+  data={profileData} 
+  forceSide="back"
+  showSparkles={false}
+/>
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/holo-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install react-parallax-tilt next
+        ```
+      </Step>
+      <Step title="Copy the files">
+        Copy both files to your components directory:
+        - `holo-card.tsx`
+        - `holo-card.css`
+      </Step>
+      <Step title="Import CSS">
+        Make sure the CSS file is imported in your component or globally
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Profile Card
+
+```tsx
+import { HoloCard } from "@/components/ui/holo-card";
+
+const data = {
+  name: "Sarah Johnson",
+  subtitle: "UX Designer",
+  description: "Creating intuitive and delightful user experiences.",
+  primaryId: "67890",
+  secondaryInfo: "Member since Jan 2024"
+};
+
+<HoloCard data={data} />
+```
+
+### With Custom Branding
+
+```tsx
+import { HoloCard } from "@/components/ui/holo-card";
+
+const data = {
+  name: "John Doe",
+  subtitle: "Product Manager",
+  backgroundImage: "/images/bg-gradient.jpg"
+};
+
+const branding = {
+  logo: "/images/company-logo.png",
+  logoAlt: "Company Name",
+  icon: "/images/icon.svg",
+  iconAlt: "Badge Icon"
+};
+
+<HoloCard data={data} branding={branding} />
+```
+
+### With Flip Callback
+
+```tsx
+import { HoloCard } from "@/components/ui/holo-card";
+import { useState } from "react";
+
+function ProfileCard() {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div>
+      <HoloCard 
+        data={profileData}
+        onFlip={(flipped) => {
+          setIsFlipped(flipped);
+          console.log(`Card is now ${flipped ? 'back' : 'front'}`);
+        }}
+      />
+      <p>Viewing: {isFlipped ? 'Back' : 'Front'}</p>
+    </div>
+  );
+}
+```
+
+### Custom Dimensions
+
+```tsx
+<HoloCard 
+  data={profileData}
+  width={400}
+  height={560}
+/>
+```
+
+### Static Display (No Interaction)
+
+```tsx
+// Show front side only (for screenshots, prints, etc.)
+<HoloCard 
+  data={profileData}
+  forceSide="front"
+  showSparkles={false}
+/>
+```
+
+### With Overlay Color
+
+```tsx
+const data = {
+  name: "Emma Wilson",
+  subtitle: "Software Engineer",
+  overlayColor: "#8b5cf6",
+  overlayOpacity: 40,
+  backgroundImage: "/images/background.jpg"
+};
+
+<HoloCard data={data} />
+```
+
+## Props
+
+<ResponseField name="data" type="HoloCardDisplayData" required>
+  Card display data
+  
+  <Expandable title="HoloCardDisplayData properties">
+    <ResponseField name="name" type="string" required>
+      Primary name displayed on the card
+    </ResponseField>
+    
+    <ResponseField name="subtitle" type="string">
+      Secondary text (e.g., job title, tagline)
+    </ResponseField>
+    
+    <ResponseField name="description" type="string">
+      Extended description shown on the back of the card
+    </ResponseField>
+    
+    <ResponseField name="primaryId" type="string | number">
+      Primary identifier (e.g., user number, ID)
+    </ResponseField>
+    
+    <ResponseField name="secondaryInfo" type="string">
+      Secondary info (e.g., "Member since 2024")
+    </ResponseField>
+    
+    <ResponseField name="backgroundImage" type="string">
+      URL for background image. Defaults to a sample gradient.
+    </ResponseField>
+    
+    <ResponseField name="badge" type="string">
+      Badge/tag text (e.g., "Pro Member", "VIP")
+    </ResponseField>
+    
+    <ResponseField name="overlayColor" type="string">
+      Overlay color (CSS color value)
+    </ResponseField>
+    
+    <ResponseField name="overlayOpacity" type="number">
+      Overlay opacity (0-100)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="height" type="number" default="446">
+  Card height in pixels
+</ResponseField>
+
+<ResponseField name="width" type="number" default="320">
+  Card width in pixels
+</ResponseField>
+
+<ResponseField name="showSparkles" type="boolean" default="true">
+  Whether to show sparkle animation effects
+</ResponseField>
+
+<ResponseField name="forceSide" type="'front' | 'back'">
+  Force the card to show a specific side. Disables flip functionality. Useful for static displays.
+</ResponseField>
+
+<ResponseField name="branding" type="HoloCardBranding">
+  Custom branding assets
+  
+  <Expandable title="HoloCardBranding properties">
+    <ResponseField name="logo" type="string">
+      Primary logo image URL
+    </ResponseField>
+    
+    <ResponseField name="logoAlt" type="string">
+      Alt text for logo
+    </ResponseField>
+    
+    <ResponseField name="icon" type="string">
+      Icon image URL
+    </ResponseField>
+    
+    <ResponseField name="iconAlt" type="string">
+      Alt text for icon
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes
+</ResponseField>
+
+<ResponseField name="children" type="ReactNode">
+  Additional content rendered inside the card
+</ResponseField>
+
+<ResponseField name="onFlip" type="(isFlipped: boolean) => void">
+  Callback when card is flipped. Receives `true` when showing back, `false` when showing front.
+</ResponseField>
+
+## Features
+
+### 3D Tilt Effect
+
+Powered by `react-parallax-tilt`:
+- Responds to mouse movement
+- Touch-enabled for mobile devices
+- Smooth parallax animations
+- Automatic reset when mouse leaves
+
+### Holographic Animation
+
+Custom CSS animations create a holographic effect:
+- Background shifts based on mouse position
+- Animated sparkle overlays (optional)
+- Gradient effects
+- Smooth transitions
+
+### Flip Functionality
+
+Click to flip between front and back:
+- **Front**: Profile info with background image
+- **Back**: Extended bio and details
+- Smooth 3D rotation animation
+- Preserved tilt effects on both sides
+
+### Front Side Content
+
+- Large name display
+- Subtitle text
+- Background image with overlay
+- Logo and badge in top corners
+- Bottom info card with IDs
+- Semi-transparent glass effects
+
+### Back Side Content
+
+- Full bio/description section
+- Member information
+- User ID display
+- Same branding elements
+- Consistent styling
+
+### Static Mode
+
+When `forceSide` is set:
+- No tilt effects
+- No flip interaction
+- Perfect for screenshots
+- No sparkles (recommended)
+- Reduced animation overhead
+
+## Customization
+
+### Background Image
+
+Provide your own background:
+```tsx
+const data = {
+  name: "User",
+  backgroundImage: "https://example.com/gradient.jpg"
+};
+```
+
+The image should be high resolution (recommended 800x1200px minimum).
+
+### Overlay Effects
+
+Add color tinting:
+```tsx
+const data = {
+  name: "User",
+  backgroundImage: "/bg.jpg",
+  overlayColor: "#8b5cf6",  // Purple tint
+  overlayOpacity: 35          // 35% opacity
+};
+```
+
+### Branding
+
+Customize logos and icons:
+```tsx
+const branding = {
+  logo: "/company-logo.png",
+  logoAlt: "Company Name",
+  icon: "/badge-icon.svg",
+  iconAlt: "Achievement Badge"
+};
+```
+
+## CSS Variables
+
+The component uses CSS custom properties:
+
+```css
+--holo-width: Card width
+--holo-height: Card height
+```
+
+These are set automatically based on props.
+
+## Accessibility
+
+- Keyboard navigation (Space/Enter to flip)
+- Focus visible states
+- ARIA attributes
+- Alt text for images
+- Semantic HTML structure
+- Reduced motion support (animations respect `prefers-reduced-motion`)
+
+## Performance
+
+Optimizations:
+- CSS transforms for animations (GPU accelerated)
+- `useCallback` for event handlers
+- Minimal re-renders
+- Lazy loading for images
+- Optional sparkle effects
+
+## Examples
+
+### Gaming Profile Card
+
+```tsx
+const gamerProfile = {
+  name: "DragonSlayer99",
+  subtitle: "Level 87 Warrior",
+  description: "Veteran player with 1000+ hours. Specializes in PvP combat and raid leading.",
+  primaryId: "PS-12345",
+  secondaryInfo: "Playing since 2020",
+  backgroundImage: "/images/fantasy-bg.jpg",
+  badge: "Elite",
+  overlayColor: "#dc2626",
+  overlayOpacity: 30
+};
+
+<HoloCard data={gamerProfile} />
+```
+
+### Employee Badge
+
+```tsx
+const employeeData = {
+  name: "Alex Rodriguez",
+  subtitle: "Senior Developer",
+  description: "Full-stack developer with expertise in React and Node.js. Team lead for the platform engineering squad.",
+  primaryId: "EMP-4521",
+  secondaryInfo: "Joined Feb 2023",
+  backgroundImage: "/corporate-bg.jpg",
+  badge: "Engineering"
+};
+
+const companyBranding = {
+  logo: "/company-logo.png",
+  logoAlt: "Acme Corp",
+  icon: "/company-icon.svg"
+};
+
+<HoloCard data={employeeData} branding={companyBranding} />
+```
+
+### Membership Card
+
+```tsx
+const membershipData = {
+  name: "Jane Smith",
+  subtitle: "Platinum Member",
+  description: "享受高级会员所有特权和福利。",
+  primaryId: "MB-789456",
+  secondaryInfo: "Valid until Dec 2024",
+  backgroundImage: "/platinum-bg.jpg",
+  badge: "Platinum",
+  overlayColor: "#6b7280",
+  overlayOpacity: 20
+};
+
+<HoloCard 
+  data={membershipData}
+  width={350}
+  height={480}
+/>
+```
+
+<Tip>
+  Use high-contrast background images for the best holographic effect. Gradients and abstract patterns work particularly well.
+</Tip>
+
+<Warning>
+  The 3D tilt effect can be intensive on low-end devices. Consider using `forceSide` for mobile views or providing a toggle to disable effects.
+</Warning>
+
+<Note>
+  This component requires Next.js Image component. If you're not using Next.js, you'll need to replace `next/image` imports with standard `<img>` tags.
+</Note>

@@ -1,0 +1,422 @@
+---
+title: Contributing
+description: Learn how to contribute to Gaia UI, from setting up your development environment to submitting your first pull request.
+---
+
+We welcome contributions to Gaia UI! Whether you're fixing bugs, improving documentation, or adding new components, we'd love your help.
+
+## Quick Start
+
+1. Fork the repository on GitHub
+2. Clone your fork locally
+3. Create a new branch for your changes
+4. Make your changes
+5. Test locally
+6. Submit a pull request
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 20 or later
+- pnpm (recommended package manager)
+- Git
+
+### Installation
+
+```bash
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/ui.git
+cd ui
+
+# Install dependencies
+pnpm install
+```
+
+### Development Commands
+
+```bash
+# Start the dev server (runs on http://localhost:3000)
+pnpm run dev
+
+# Build the project
+pnpm run build
+
+# Build registry files
+pnpm run registry:build
+
+# Type checking
+pnpm run type
+
+# Linting
+pnpm run lint
+
+# Fix linting issues
+pnpm run lint:fix
+
+# Format code
+pnpm run format
+
+# Check formatting
+pnpm run format:check
+```
+
+## Project Structure
+
+```
+.
+├── app/                      # Next.js app directory
+├── components/              
+│   ├── previews/            # Component preview examples
+│   └── ui/                  # Documentation UI components
+├── content/
+│   └── docs/                # MDX documentation files
+├── lib/                     # Utility functions and config
+├── public/
+│   └── r/                   # Built registry files
+├── registry/
+│   └── new-york/
+│       └── ui/              # Registry components (source)
+├── registry.json            # Registry configuration
+└── package.json
+```
+
+## Contributing Components
+
+### Our Philosophy
+
+**Quality Over Quantity** - We focus on shipping production-ready components that solve real problems. Each component should be:
+
+- Battle-tested in production scenarios
+- Designed to handle edge cases and real-world scenarios
+- Accessible, responsive, and performant
+- Solving problems better than existing alternatives
+
+We don't accept generic components that duplicate what's already available elsewhere. If you're proposing a component, it should add genuine value to the ecosystem.
+
+### Component Requirements
+
+Before submitting a component, ensure it meets these requirements:
+
+- Works in light and dark mode
+- Fully keyboard accessible
+- Has proper ARIA labels and semantic HTML
+- Respects reduced motion preferences
+- Uses CSS variables for theming (no hardcoded colors)
+- Follows the Gaia UI design philosophy (flat design, proper spacing)
+- Includes TypeScript types
+- Has comprehensive documentation
+- Includes preview examples
+
+### Workflow
+
+<Steps>
+
+### Create Your Component
+
+Add your component to `registry/new-york/ui/your-component.tsx`:
+
+```tsx
+import * as React from "react";
+import { cn } from "@/lib/utils";
+
+export interface YourComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+const YourComponent = React.forwardRef<HTMLDivElement, YourComponentProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn("base-classes", className)} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
+YourComponent.displayName = "YourComponent";
+
+export { YourComponent };
+```
+
+### Register the Component
+
+Add an entry to `registry.json`:
+
+```json
+{
+  "name": "your-component",
+  "type": "registry:ui",
+  "title": "Your Component",
+  "description": "A brief description of what this component does.",
+  "dependencies": [],
+  "registryDependencies": ["icons"],
+  "files": [
+    {
+      "path": "registry/new-york/ui/your-component.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
+```
+
+Then build the registry:
+
+```bash
+pnpm run registry:build
+```
+
+### Create Preview Examples
+
+Create preview components in `components/previews/your-component/`:
+
+```tsx title="components/previews/your-component/default.tsx"
+import { YourComponent } from "@/registry/new-york/ui/your-component";
+
+export default function YourComponentDefault() {
+  return (
+    <YourComponent>
+      Example content
+    </YourComponent>
+  );
+}
+```
+
+### Write Documentation
+
+Create documentation at `content/docs/components/your-component.mdx`.
+
+Your documentation should include:
+- Title and description frontmatter
+- Component preview
+- Installation instructions (automatic and manual)
+- Usage examples
+- Props documentation with types
+- Examples showing variants
+
+See existing component pages for reference.
+
+### Test Locally
+
+Test your component installation locally:
+
+```bash
+# Start dev server
+pnpm run dev
+
+# In another terminal, test installation
+npx shadcn@latest add http://localhost:3000/r/your-component.json
+```
+
+</Steps>
+
+## Design Guidelines
+
+Gaia UI follows Apple's Human Interface Guidelines and modern design principles.
+
+### Flat Design, No Outlines
+
+Avoid heavy borders and outlines:
+
+```tsx
+// ❌ Don't do this
+<div className="border border-gray-300 rounded">
+
+// ✅ Do this instead
+<div className="bg-muted/50 rounded-xl shadow-sm">
+```
+
+### Spacing Guidelines
+
+```tsx
+// Component padding guidelines
+<Card className="p-6">                    // Outer container
+  <CardHeader className="pb-4">           // Section spacing
+    <CardTitle className="mb-2">          // Title to content
+  </CardHeader>
+  <CardContent className="space-y-4">     // Content gaps
+```
+
+- Touch targets: Minimum 44x44px
+- Padding scale: `p-3`, `p-4`, `p-6`, `p-8`
+- Consistent gaps: `gap-3` or `gap-4` for layouts, `gap-6` or `gap-8` for sections
+
+### Typography
+
+- Headings: Weights 500-700
+- Body text: 14-16px, weight 400
+- Labels: 12-14px, weight 500
+- Stick to 2-3 sizes per component max
+
+### Theme Colors
+
+Always use CSS variables:
+
+```tsx
+// ✅ Theme-aware colors
+<div className="bg-background text-foreground">
+<div className="text-muted-foreground">
+
+// ❌ Hardcoded colors
+<div className="bg-white text-black">
+```
+
+## Accessibility Requirements
+
+### Keyboard Navigation
+
+```tsx
+// ✅ Use proper interactive elements
+<button onClick={...}>Submit</button>
+
+// ❌ Not accessible
+<div onClick={...}>Submit</div>
+```
+
+All interactive elements must:
+- Be focusable
+- Have logical tab order
+- Show visible focus indicators
+- Support Enter and Space for activation
+
+### Screen Reader Support
+
+```tsx
+// Icon-only button needs a label
+<button aria-label="Close dialog">
+  <CloseIcon aria-hidden="true" />
+</button>
+```
+
+### Motion Preferences
+
+```tsx
+@media (prefers-reduced-motion: reduce) {
+  .animated-element {
+    animation: none;
+    transition: none;
+  }
+}
+```
+
+## Built With
+
+- **Next.js 15** - Documentation and registry
+- **Tailwind CSS v4** - Styling
+- **TypeScript** - Type safety
+- **Radix UI** - Accessible primitives
+- **Framer Motion** - Animations
+- **shadcn CLI** - Component installation
+
+## Migration from HeroUI
+
+When migrating components from the main Gaia repo:
+
+```tsx
+// ❌ HeroUI pattern
+import { Accordion, AccordionItem } from "@heroui/accordion";
+
+// ✅ shadcn/Radix pattern
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion";
+```
+
+## Pull Request Guidelines
+
+### Before Submitting
+
+- Test in both light and dark modes
+- Run type checking: `pnpm run type`
+- Run linting: `pnpm run lint:fix`
+- Format code: `pnpm run format`
+- Test keyboard navigation
+- Verify responsive behavior
+- Check accessibility with screen reader
+
+### PR Description
+
+Include:
+- What component/feature you're adding
+- Why it's needed
+- Screenshots or GIFs of the component
+- Any breaking changes
+- Checklist of completed requirements
+
+### Example PR Template
+
+```markdown
+## What
+
+Adds a new YourComponent that provides [functionality].
+
+## Why
+
+This component solves [problem] and is used in production at [company].
+
+## Screenshots
+
+[Add screenshots here]
+
+## Checklist
+
+- [x] Works in light and dark mode
+- [x] Fully keyboard accessible
+- [x] Has proper ARIA labels
+- [x] Respects reduced motion
+- [x] Uses CSS variables
+- [x] Has documentation
+- [x] Has preview examples
+- [x] Types are exported
+```
+
+## Code Style
+
+We use Biome for linting and formatting:
+
+```bash
+# Check code style
+pnpm run format:check
+pnpm run lint
+
+# Fix issues automatically
+pnpm run format
+pnpm run lint:fix
+```
+
+## Testing Components
+
+Before submitting:
+
+1. **Visual check** - Both themes, responsive breakpoints
+2. **Keyboard test** - Tab through all interactive elements
+3. **Screen reader test** - Use NVDA/JAWS/VoiceOver
+4. **Responsive test** - Mobile, tablet, desktop
+5. **Edge cases** - Empty states, long text, many items
+
+## Getting Help
+
+- **Discord** - [Join our community](https://discord.heygaia.io)
+- **GitHub Issues** - Report bugs or request features
+- **Twitter** - [@trygaia](https://twitter.com/trygaia)
+
+## Code of Conduct
+
+Be respectful and constructive. We're building this together.
+
+## License
+
+By contributing to Gaia UI, you agree that your contributions will be licensed under the MIT License.
+
+## Recognition
+
+All contributors are recognized in our README and on the documentation site.
+
+<a href="https://github.com/theexperiencecompany/ui/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=theexperiencecompany/ui" />
+</a>
+
+Thank you for contributing to Gaia UI!

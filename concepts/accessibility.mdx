@@ -1,0 +1,364 @@
+---
+title: Accessibility
+description: Non-negotiable accessibility guidelines for building inclusive AI interfaces that work for everyone.
+---
+
+Every component in Gaia UI must be accessible. No exceptions. Accessibility isn't a feature—it's a fundamental requirement.
+
+<Warning>
+Accessibility is mandatory for all components. Components that don't meet WCAG 2.1 AA standards should not be shipped.
+</Warning>
+
+## Keyboard Navigation
+
+All interactive elements must be fully operable via keyboard. Many users navigate without a mouse due to preference, disability, or device constraints.
+
+### Focusability
+
+All interactive elements must be focusable:
+
+```tsx
+// ✅ Accessible - proper button element
+<button onClick={handleClick}>Submit</button>
+
+// ❌ Not accessible - div is not focusable by default
+<div onClick={handleClick}>Submit</div>
+
+// ⚠️ Acceptable if you must use a div (but prefer semantic elements)
+<div 
+  role="button"
+  tabIndex={0}
+  onClick={handleClick}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleClick();
+    }
+  }}
+>
+  Submit
+</div>
+```
+
+<Note>
+Always use semantic HTML elements (`button`, `a`, `input`) when possible. They have built-in keyboard support and proper accessibility semantics.
+</Note>
+
+### Tab Order
+
+Logical tab order should follow the visual flow of the interface. Users should be able to navigate through interactive elements in a predictable way.
+
+- Tab order follows DOM order
+- Avoid positive `tabIndex` values (they override natural order)
+- Use `tabIndex={-1}` to remove elements from tab order when appropriate
+
+### Focus Indicators
+
+Visible focus indicators are required. Never remove outlines without adding custom focus styles:
+
+```tsx
+// ❌ Never do this
+.button:focus {
+  outline: none; /* Removes accessibility */
+}
+
+// ✅ Always provide visible focus styles
+.button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+```
+
+Gaia UI components use `focus-visible` for smart focus indicators that appear for keyboard navigation but not mouse clicks.
+
+### Keyboard Shortcuts
+
+Standard keyboard interactions that must be supported:
+
+- `Enter` and `Space` — Activate buttons and controls
+- `Escape` — Close modals, dropdowns, and dialogs
+- Arrow keys — Navigate within menus, lists, and tabs
+- `Home`/`End` — Jump to first/last item in lists
+
+```tsx
+// Example from the Composer component
+const handleKeyDown = useCallback(
+  (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && !disabled) {
+      e.preventDefault();
+      handleSubmit();
+    }
+    if (e.key === "Escape") {
+      closeDropdown();
+    }
+  },
+  [handleSubmit, disabled]
+);
+```
+
+## Screen Reader Support
+
+Screen readers are used by blind and visually impaired users to navigate interfaces. Proper labeling and semantic markup are essential.
+
+### Meaningful Labels
+
+All inputs and interactive elements need accessible names:
+
+```tsx
+// ✅ Good - visible label
+<label htmlFor="email">Email Address</label>
+<input id="email" type="email" />
+
+// ✅ Good - aria-label for icon-only buttons
+<button aria-label="Close dialog">
+  <CloseIcon aria-hidden="true" />
+</button>
+
+// ✅ Good - aria-labelledby for complex labels
+<div id="dialog-title">Confirm Action</div>
+<div role="dialog" aria-labelledby="dialog-title">
+  {/* Dialog content */}
+</div>
+```
+
+### Hiding Decorative Content
+
+Decorative elements should be hidden from screen readers:
+
+```tsx
+// Icon-only button with proper labeling
+<button aria-label="Search">
+  <SearchIcon aria-hidden="true" />
+</button>
+
+// Decorative dividers
+<div className="border-t" aria-hidden="true" />
+```
+
+### Dynamic Content
+
+Announce dynamic content changes with `aria-live`:
+
+```tsx
+// Polite announcements (wait for user to pause)
+<div aria-live="polite" aria-atomic="true">
+  {statusMessage}
+</div>
+
+// Assertive announcements (immediate)
+<div aria-live="assertive" role="alert">
+  {errorMessage}
+</div>
+```
+
+<Tip>
+Use `aria-live="polite"` for most dynamic updates. Reserve `aria-live="assertive"` for critical errors and time-sensitive information.
+</Tip>
+
+## Color Contrast
+
+Sufficient color contrast is required for users with low vision or color blindness.
+
+### WCAG Requirements
+
+- **Normal text** — At least 4.5:1 contrast ratio
+- **Large text** (18px+ or 14px+ bold) — At least 3:1 contrast ratio
+- **Interactive elements** — At least 3:1 contrast for boundaries and states
+
+```tsx
+// ✅ Good - uses theme-aware colors with proper contrast
+<div className="bg-background text-foreground">
+  <p className="text-muted-foreground">Secondary text</p>
+</div>
+
+// ❌ Bad - low contrast gray on white
+<div className="bg-white">
+  <p className="text-gray-300">Hard to read</p>
+</div>
+```
+
+### Color as Information
+
+Don't rely solely on color to convey information:
+
+```tsx
+// ❌ Bad - color only
+<span className="text-red-500">Error</span>
+<span className="text-green-500">Success</span>
+
+// ✅ Good - color + icon + text
+<span className="text-red-500 flex items-center gap-2">
+  <ErrorIcon aria-hidden="true" />
+  Error: Invalid input
+</span>
+```
+
+### Interactive States
+
+All interactive elements need visible states:
+
+- **Default** — Base state
+- **Hover** — Mouse hover indication
+- **Focus** — Keyboard focus indication
+- **Active** — Currently pressed/active
+- **Disabled** — Non-interactive state
+
+```tsx
+// Example from Button component
+const buttonVariants = cva(
+  "inline-flex items-center justify-center " +
+  "hover:bg-primary/90 " +              // Hover state
+  "focus-visible:ring-ring/50 " +       // Focus state
+  "active:scale-95 " +                  // Active state
+  "disabled:opacity-50 " +              // Disabled state
+  "transition-all"
+);
+```
+
+## Motion and Animation
+
+Respect user preferences for reduced motion. Some users experience vestibular disorders that make animations nauseating or distracting.
+
+### Reduced Motion Preference
+
+Always check and respect `prefers-reduced-motion`:
+
+```tsx
+// JavaScript approach
+const prefersReducedMotion = 
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReducedMotion) {
+  // Apply animations
+}
+
+// CSS approach (preferred)
+@media (prefers-reduced-motion: reduce) {
+  .animated-element {
+    animation: none;
+    transition: none;
+  }
+}
+```
+
+### Animation Guidelines
+
+- Keep animations subtle and purposeful
+- Avoid content that flashes more than 3 times per second
+- Provide alternatives to motion-based feedback
+
+<Warning>
+Content that flashes more than 3 times per second can trigger seizures in users with photosensitive epilepsy. Never create flashing content.
+</Warning>
+
+## Semantic HTML
+
+Use semantic HTML elements to provide structure and meaning:
+
+### Landmarks
+
+```tsx
+<header>       // Page header
+<nav>          // Navigation
+<main>         // Main content
+<aside>        // Sidebar content
+<footer>       // Page footer
+<article>      // Self-contained content
+<section>      // Thematic grouping
+```
+
+### Interactive Elements
+
+- Use `<button>` for actions
+- Use `<a>` for navigation
+- Use `<input>` for user input
+- Use `<select>` for dropdowns
+
+### Headings
+
+Maintain a logical heading hierarchy:
+
+```tsx
+<h1>Page Title</h1>
+  <h2>Section</h2>
+    <h3>Subsection</h3>
+    <h3>Subsection</h3>
+  <h2>Section</h2>
+```
+
+<Note>
+Never skip heading levels (e.g., h1 to h3). Screen reader users often navigate by headings, and a logical hierarchy helps them understand page structure.
+</Note>
+
+## ARIA Attributes
+
+ARIA (Accessible Rich Internet Applications) attributes enhance accessibility when semantic HTML isn't enough.
+
+### Common ARIA Roles
+
+- `role="button"` — For custom buttons
+- `role="dialog"` — For modals and dialogs
+- `role="alert"` — For important announcements
+- `role="menu"` — For menu widgets
+- `role="tab"` — For tab interfaces
+
+### ARIA States
+
+- `aria-expanded` — For collapsible elements
+- `aria-selected` — For selectable items
+- `aria-checked` — For custom checkboxes
+- `aria-disabled` — For disabled elements
+- `aria-hidden` — To hide decorative elements
+
+### ARIA Properties
+
+- `aria-label` — Accessible name
+- `aria-labelledby` — Reference to label element
+- `aria-describedby` — Reference to description
+- `aria-live` — Announce dynamic changes
+
+```tsx
+// Example: Accessible tab interface
+<div role="tablist">
+  <button
+    role="tab"
+    aria-selected={isSelected}
+    aria-controls="panel-1"
+    id="tab-1"
+  >
+    Tab 1
+  </button>
+</div>
+<div
+  role="tabpanel"
+  id="panel-1"
+  aria-labelledby="tab-1"
+  hidden={!isSelected}
+>
+  Panel content
+</div>
+```
+
+## Testing Checklist
+
+Before considering a component accessible, verify:
+
+- [ ] Can be operated entirely with keyboard
+- [ ] Has visible focus indicators
+- [ ] Works with screen readers (test with NVDA, JAWS, or VoiceOver)
+- [ ] Meets WCAG 2.1 AA contrast requirements
+- [ ] Respects `prefers-reduced-motion`
+- [ ] Uses semantic HTML where possible
+- [ ] Has appropriate ARIA attributes
+- [ ] Announces dynamic changes appropriately
+- [ ] All interactive elements have accessible names
+
+<Tip>
+Use the [axe DevTools](https://www.deque.com/axe/devtools/) browser extension to automatically catch many accessibility issues during development.
+</Tip>
+
+## Resources
+
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- [A11y Project Checklist](https://www.a11yproject.com/checklist/)

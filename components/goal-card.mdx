@@ -1,0 +1,404 @@
+---
+title: "Goal Card"
+description: "A goal tracking card with progress bar, status badges, and roadmap integration."
+---
+
+The Goal Card displays goal progress with visual indicators, status badges, step tracking, and action buttons. Migrated from GAIA's goal tracking system.
+
+## Preview
+
+<CodeGroup>
+```tsx Basic
+import { GoalCard } from "@/components/ui/goal-card";
+
+export default function Example() {
+  return (
+    <GoalCard
+      id="goal-1"
+      title="Launch Product V2"
+      progress={65}
+      createdAt="2024-01-15"
+    />
+  );
+}
+```
+
+```tsx With Roadmap
+import { GoalCard } from "@/components/ui/goal-card";
+
+const roadmap = {
+  title: "Launch Product V2",
+  nodes: [
+    { id: "1", title: "Design mockups", isComplete: true },
+    { id: "2", title: "Frontend development", isComplete: true },
+    { id: "3", title: "Backend API", isComplete: false },
+    { id: "4", title: "Testing", isComplete: false },
+    { id: "5", title: "Deploy", isComplete: false }
+  ]
+};
+
+export default function Example() {
+  return (
+    <GoalCard
+      id="goal-2"
+      title="Launch Product V2"
+      progress={40}
+      createdAt="2024-01-15"
+      roadmap={roadmap}
+      onClick={(id) => console.log("View goal", id)}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/goal-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy `goal-card.tsx` to your components directory
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Goal
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+
+<GoalCard
+  id="goal-1"
+  title="Complete React Course"
+  progress={75}
+  createdAt={new Date()}
+/>
+```
+
+### With Roadmap Steps
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+
+const goalWithRoadmap = {
+  id: "goal-2",
+  title: "Learn TypeScript",
+  progress: 60,
+  createdAt: "2024-02-01",
+  roadmap: {
+    title: "TypeScript Learning Path",
+    nodes: [
+      { id: "1", title: "Basic types", isComplete: true },
+      { id: "2", title: "Interfaces", isComplete: true },
+      { id: "3", title: "Generics", isComplete: true },
+      { id: "4", title: "Advanced types", isComplete: false },
+      { id: "5", title: "Build project", isComplete: false }
+    ]
+  }
+};
+
+<GoalCard {...goalWithRoadmap} />
+```
+
+### With Actions
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+
+function GoalList() {
+  const handleView = (id) => {
+    router.push(`/goals/${id}`);
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("Delete this goal?")) {
+      deleteGoal(id);
+    }
+  };
+
+  return (
+    <GoalCard
+      id="goal-3"
+      title="Run a Marathon"
+      progress={25}
+      createdAt="2024-03-01"
+      onClick={handleView}
+      onDelete={handleDelete}
+    />
+  );
+}
+```
+
+## Props
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the goal
+</ResponseField>
+
+<ResponseField name="title" type="string" required>
+  Goal title. If a roadmap is provided, the roadmap title takes precedence.
+</ResponseField>
+
+<ResponseField name="progress" type="number" required>
+  Progress percentage (0-100)
+</ResponseField>
+
+<ResponseField name="createdAt" type="string | Date">
+  Date when the goal was created. Formatted as "Mar 1, 2024".
+</ResponseField>
+
+<ResponseField name="roadmap" type="GoalRoadmap">
+  Optional roadmap with steps
+  
+  <Expandable title="GoalRoadmap properties">
+    <ResponseField name="title" type="string" required>
+      Roadmap title (displayed instead of goal title)
+    </ResponseField>
+    
+    <ResponseField name="nodes" type="GoalStep[]" required>
+      Array of roadmap steps
+      
+      <Expandable title="GoalStep properties">
+        <ResponseField name="id" type="string" required>
+          Unique step identifier
+        </ResponseField>
+        
+        <ResponseField name="title" type="string" required>
+          Step title/description
+        </ResponseField>
+        
+        <ResponseField name="isComplete" type="boolean" required>
+          Whether the step is completed
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="onClick" type="(id: string) => void">
+  Callback when the "View Goal" button is clicked
+</ResponseField>
+
+<ResponseField name="onDelete" type="(id: string) => void">
+  Callback when the delete button is clicked. Shows a delete button on hover when provided.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Automatic Status Detection
+
+The card automatically determines status based on progress:
+
+- **Not Started** (Amber badge): 0% progress
+- **In Progress** (Blue badge): 1-99% progress
+- **Completed** (Green badge): 100% progress
+
+### Progress Bar
+
+Visual progress indicator:
+- Full-width bar with percentage label
+- Dark fill in light mode, light fill in dark mode
+- Smooth transitions as progress updates
+
+### Step Tracking
+
+When a roadmap is provided:
+- Shows completed/total steps count with checkmark icon
+- Calculates completion based on `isComplete` flags
+- Updates status badge accordingly
+
+### Hover Actions
+
+When `onDelete` is provided:
+- Delete button appears on card hover
+- Positioned in top-right corner
+- Uses three-dot menu icon
+- Prevents event bubbling to parent
+
+### View Button
+
+When `onClick` is provided:
+- "View Goal" button appears in bottom-right
+- Dark button in light mode, light button in dark mode
+- Arrow icon for navigation affordance
+
+## Status Badges
+
+### Not Started
+```tsx
+// Amber badge for goals with 0% progress
+{
+  label: "Not Started",
+  bgColor: "bg-amber-500/10 dark:bg-amber-500/20",
+  textColor: "text-amber-600 dark:text-amber-400"
+}
+```
+
+### In Progress
+```tsx
+// Blue badge for goals with 1-99% progress
+{
+  label: "In Progress",
+  bgColor: "bg-sky-500/10 dark:bg-sky-500/20",
+  textColor: "text-blue-600 dark:text-blue-400"
+}
+```
+
+### Completed
+```tsx
+// Green badge for goals with 100% progress
+{
+  label: "Completed",
+  bgColor: "bg-green-500/10 dark:bg-green-500/20",
+  textColor: "text-green-600 dark:text-green-400"
+}
+```
+
+## Examples
+
+### AI-Generated Goal
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+
+const aiGoal = {
+  id: "ai-goal-1",
+  title: "Master Python",
+  progress: 0,
+  createdAt: new Date(),
+  roadmap: {
+    title: "Python Mastery Path",
+    nodes: [
+      { id: "1", title: "Learn syntax basics", isComplete: false },
+      { id: "2", title: "Object-oriented programming", isComplete: false },
+      { id: "3", title: "Work with libraries (numpy, pandas)", isComplete: false },
+      { id: "4", title: "Build a data analysis project", isComplete: false },
+      { id: "5", title: "Create a web scraper", isComplete: false }
+    ]
+  }
+};
+
+<GoalCard {...aiGoal} onClick={viewGoalDetails} />
+```
+
+### Progress Tracking
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+import { useState } from "react";
+
+function GoalTracker() {
+  const [goals, setGoals] = useState([
+    {
+      id: "1",
+      title: "Write a Book",
+      progress: 45,
+      createdAt: "2024-01-01",
+      roadmap: {
+        title: "Book Writing Journey",
+        nodes: [
+          { id: "1", title: "Outline chapters", isComplete: true },
+          { id: "2", title: "Write first draft", isComplete: true },
+          { id: "3", title: "Edit and revise", isComplete: false },
+          { id: "4", title: "Get feedback", isComplete: false },
+          { id: "5", title: "Final polish", isComplete: false }
+        ]
+      }
+    }
+  ]);
+
+  const updateProgress = (id, newProgress) => {
+    setGoals(prev => 
+      prev.map(g => g.id === id ? { ...g, progress: newProgress } : g)
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      {goals.map(goal => (
+        <GoalCard key={goal.id} {...goal} />
+      ))}
+    </div>
+  );
+}
+```
+
+### Goal Management
+
+```tsx
+import { GoalCard } from "@/components/ui/goal-card";
+
+function GoalManager() {
+  const handleView = (id) => {
+    // Navigate to goal details
+    router.push(`/goals/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    if (confirm("Are you sure you want to delete this goal?")) {
+      await deleteGoal(id);
+      refreshGoals();
+    }
+  };
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {goals.map(goal => (
+        <GoalCard
+          key={goal.id}
+          {...goal}
+          onClick={handleView}
+          onDelete={handleDelete}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+## Styling
+
+The goal card uses:
+- White background in light mode, zinc-900 in dark mode
+- Border with zinc colors
+- Rounded corners (rounded-3xl)
+- Subtle shadow for depth
+- Hover effects for interactive elements
+
+## Accessibility
+
+- Semantic HTML structure
+- ARIA labels on icon-only buttons
+- Keyboard navigation support
+- Clear visual status indicators
+- High contrast text and backgrounds
+- Focus states on interactive elements
+
+<Tip>
+  Use the roadmap feature to break down complex goals into manageable steps. This helps users see progress more clearly.
+</Tip>
+
+<Note>
+  The progress percentage should be managed by your application logic. The card is a pure display component.
+</Note>

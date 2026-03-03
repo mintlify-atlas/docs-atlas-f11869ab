@@ -1,0 +1,234 @@
+---
+title: Link Preview
+description: An interactive link component with rich preview tooltip showing website metadata like title, description, and images.
+---
+
+<ComponentPreview name="link-preview/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add link-preview
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. This component depends on:
+    ```bash
+    npx gaia-ui add icons
+    ```
+
+    2. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/link-preview.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+Transform regular links into rich preview links that show website information on hover.
+
+```tsx
+import { LinkPreview } from "@/components/ui/link-preview";
+
+export default function Example() {
+  return (
+    <p>
+      Check out this amazing
+      <LinkPreview href="https://github.com">
+        GitHub
+      </LinkPreview>
+      website!
+    </p>
+  );
+}
+```
+
+## Features
+
+### Rich Metadata Extraction
+
+Automatically fetches and displays:
+
+- **Site name**: From og:site_name meta tag
+- **Title**: Page title or og:title
+- **Description**: Meta description
+- **Featured image**: og:image or twitter:image
+- **Favicon**: Site icon
+
+### Lazy Loading
+
+Metadata only fetches when the link scrolls into view:
+
+- Uses Intersection Observer API
+- Starts fetching 100px before element is visible
+- Improves performance for pages with many links
+
+### Smart URL Validation
+
+Only shows previews for valid HTTP/HTTPS URLs:
+
+```tsx
+{/* Shows preview */}
+<LinkPreview href="https://example.com">Link</LinkPreview>
+
+{/* No preview - invalid */}
+<LinkPreview href="mailto:user@example.com">Email</LinkPreview>
+
+{/* No preview - not a URL */}
+<LinkPreview href="/relative/path">Path</LinkPreview>
+```
+
+### Loading States
+
+Graceful loading and error handling:
+
+```tsx
+{/* While loading */}
+<LinkPreview href="https://slow-site.com">
+  {/* Shows spinner in tooltip */}
+</LinkPreview>
+
+{/* On error */}
+<LinkPreview href="https://blocked-site.com">
+  {/* Shows "Failed to load preview" message */}
+</LinkPreview>
+```
+
+### Custom Styling
+
+Override the default link appearance:
+
+```tsx
+<LinkPreview 
+  href="https://example.com"
+  className="text-blue-600 hover:underline"
+>
+  Custom styled link
+</LinkPreview>
+```
+
+### Inline Usage
+
+Works naturally in text:
+
+```tsx
+<p className="text-base">
+  The best way to learn React is through{" "}
+  <LinkPreview href="https://react.dev">
+    the official docs
+  </LinkPreview>
+  {" "}and building projects.
+</p>
+```
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>href</PropName>
+    <PropType>string</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      The URL to link to and fetch metadata from.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>children</PropName>
+    <PropType>ReactNode | string</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      The link text or elements to display.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>Default styled link</PropDefault>
+    <PropDescription>
+      Custom CSS classes for the link element.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Metadata Extraction
+
+The component extracts metadata using multiple strategies:
+
+### Priority Order
+
+1. **Open Graph tags** (og:title, og:description, og:image)
+2. **Twitter Card tags** (twitter:title, twitter:description, twitter:image)
+3. **Standard HTML tags** (title, meta description)
+4. **Fallbacks** (domain name, favicon.ico)
+
+### Supported Meta Tags
+
+```html
+<!-- Title -->
+<meta property="og:title" content="Page Title" />
+<meta name="twitter:title" content="Page Title" />
+<title>Page Title</title>
+
+<!-- Description -->
+<meta property="og:description" content="Description" />
+<meta name="twitter:description" content="Description" />
+<meta name="description" content="Description" />
+
+<!-- Image -->
+<meta property="og:image" content="https://example.com/image.jpg" />
+<meta name="twitter:image" content="https://example.com/image.jpg" />
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.ico" />
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<!-- Site Name -->
+<meta property="og:site_name" content="Example Site" />
+```
+
+## CORS Considerations
+
+The component fetches URLs directly from the browser. Some sites may block cross-origin requests. For production:
+
+1. **Proxy through your backend**:
+```tsx
+// Modify the fetch call in link-preview.tsx
+const response = await fetch(`/api/preview?url=${encodeURIComponent(href)}`);
+```
+
+2. **Use a metadata service**:
+```tsx
+const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(href)}`);
+```
+
+## Tooltip Positioning
+
+The tooltip uses shadcn/ui's Tooltip component:
+
+- Automatically positions to avoid viewport edges
+- Maximum width of 280px
+- Dark theme with zinc colors
+- 3px padding for compact display
+
+## Performance
+
+- **Intersection Observer**: Only fetches when link is near viewport
+- **Cached requests**: Browser caches repeated fetches
+- **Lazy metadata**: No impact on initial page load
+- **Image optimization**: Uses Next.js Image component
+
+## Accessibility
+
+- Opens in new tab with `target="_blank"`
+- Includes `rel="noopener noreferrer"` for security
+- Tooltip provides additional context for screen readers
+- Link remains fully keyboard accessible
+- Fallback text shown when preview unavailable

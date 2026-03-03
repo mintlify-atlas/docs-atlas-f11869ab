@@ -1,0 +1,434 @@
+---
+title: Slash Command Dropdown
+description: A slash command dropdown for selecting tools and actions with categorization and search.
+---
+
+The Slash Command Dropdown component provides a searchable, categorized menu for selecting tools and actions. It's designed to integrate seamlessly with chat interfaces and composer components.
+
+## Preview
+
+<ComponentPreview name="slash-command-dropdown-demo" />
+
+## Features
+
+- **Category filtering** - Organize tools into categories with tab navigation
+- **Keyboard navigation** - Arrow keys, Enter to select, Escape to close
+- **Auto-scrolling** - Selected item automatically scrolls into view
+- **Search integration** - Filter results based on fuzzy matching
+- **Icon system** - Built-in icons for common tool categories
+- **Custom icons** - Support for custom tool icons
+- **Two modes** - Inline (triggered by "/") or button-triggered
+- **Dark mode support** - Fully themed for light and dark modes
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx gaia-ui add slash-command-dropdown
+```
+
+This will install the component along with its dependencies: `icons`.
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+**Install dependencies:**
+
+```bash
+npm install @hugeicons/react @hugeicons/core-free-icons
+```
+
+**Copy the source files:**
+
+1. Copy `registry/new-york/ui/slash-command-dropdown.tsx`
+2. Copy `registry/new-york/ui/icons.tsx`
+3. Copy `lib/utils/tool-icons.tsx`
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+import type { Tool, SlashCommandMatch } from "@/components/ui/slash-command-dropdown";
+import { useState } from "react";
+
+const tools: Tool[] = [
+  {
+    name: "search_web",
+    category: "search",
+    description: "Search the internet for information"
+  },
+  {
+    name: "create_image",
+    category: "creative",
+    description: "Generate AI images"
+  },
+  {
+    name: "write_code",
+    category: "development",
+    description: "Generate code snippets"
+  }
+];
+
+export function ToolSelector() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const matches: SlashCommandMatch[] = tools.map(tool => ({
+    tool,
+    score: 1
+  }));
+
+  const handleSelect = (match: SlashCommandMatch) => {
+    console.log("Selected:", match.tool);
+    setIsVisible(false);
+  };
+
+  return (
+    <SlashCommandDropdown
+      matches={matches}
+      selectedIndex={selectedIndex}
+      onSelect={handleSelect}
+      onClose={() => setIsVisible(false)}
+      position={{ left: 0, width: 400 }}
+      isVisible={isVisible}
+    />
+  );
+}
+```
+
+### With Category Filtering
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+import { useState } from "react";
+
+const categories = ["all", "search", "creative", "development"];
+
+export function CategorizedTools() {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  return (
+    <SlashCommandDropdown
+      matches={matches}
+      selectedIndex={0}
+      onSelect={handleSelect}
+      onClose={() => setIsVisible(false)}
+      position={{ left: 0, width: 400 }}
+      isVisible={true}
+      selectedCategory={selectedCategory}
+      categories={categories}
+      onCategoryChange={setSelectedCategory}
+    />
+  );
+}
+```
+
+### Button-Triggered Mode
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+
+export function ToolsButton() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button onClick={() => setIsOpen(!isOpen)}>
+        Browse Tools
+      </button>
+      
+      <SlashCommandDropdown
+        matches={matches}
+        selectedIndex={0}
+        onSelect={handleSelect}
+        onClose={() => setIsOpen(false)}
+        position={{ left: 0, width: 400 }}
+        isVisible={isOpen}
+        openedViaButton={true}
+      />
+    </div>
+  );
+}
+```
+
+### With Custom Icons
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+import { SearchIcon } from "@/components/icons";
+
+const tools: Tool[] = [
+  {
+    name: "custom_search",
+    category: "search",
+    description: "Custom search tool",
+    icon: <SearchIcon size={20} className="text-blue-500" />
+  }
+];
+
+export function CustomIconTools() {
+  return (
+    <SlashCommandDropdown
+      matches={tools.map(tool => ({ tool, score: 1 }))}
+      // ... other props
+    />
+  );
+}
+```
+
+### Inline in Input (Slash Command)
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+import { useState, useRef } from "react";
+
+export function InlineSlashCommand() {
+  const [inputValue, setInputValue] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    // Detect slash command
+    const slashIndex = value.lastIndexOf("/");
+    if (slashIndex !== -1) {
+      const query = value.slice(slashIndex + 1);
+      setSearchQuery(query);
+      setShowDropdown(true);
+    } else {
+      setShowDropdown(false);
+    }
+  };
+
+  const handleSelect = (match: SlashCommandMatch) => {
+    // Replace /query with selected tool
+    const slashIndex = inputValue.lastIndexOf("/");
+    const newValue = inputValue.slice(0, slashIndex) + match.tool.name + " ";
+    setInputValue(newValue);
+    setShowDropdown(false);
+    inputRef.current?.focus();
+  };
+
+  // Filter tools based on search query
+  const filteredMatches = tools
+    .filter(tool => 
+      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tool.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .map(tool => ({ tool, score: 1 }));
+
+  return (
+    <div className="relative">
+      <input
+        ref={inputRef}
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder="Type / for tools..."
+        className="w-full px-4 py-2 border rounded"
+      />
+      
+      {showDropdown && (
+        <SlashCommandDropdown
+          matches={filteredMatches}
+          selectedIndex={0}
+          onSelect={handleSelect}
+          onClose={() => setShowDropdown(false)}
+          position={{
+            left: 0,
+            bottom: inputRef.current?.offsetTop || 0,
+            width: inputRef.current?.offsetWidth || 400
+          }}
+          isVisible={true}
+        />
+      );
+    </div>
+  );
+}
+```
+
+### Positioned Above Input
+
+```tsx
+import { SlashCommandDropdown } from "@/components/ui/slash-command-dropdown";
+
+export function AboveInput() {
+  return (
+    <SlashCommandDropdown
+      matches={matches}
+      selectedIndex={0}
+      onSelect={handleSelect}
+      onClose={() => setIsVisible(false)}
+      position={{
+        left: 0,
+        bottom: 100, // Position above input
+        width: 400
+      }}
+      isVisible={true}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="matches" type="SlashCommandMatch[]" required>
+  Array of tools with their relevance scores.
+</ParamField>
+
+<ParamField path="selectedIndex" type="number" required>
+  Currently selected item index (for keyboard navigation).
+</ParamField>
+
+<ParamField path="onSelect" type="(match: SlashCommandMatch) => void" required>
+  Callback fired when a tool is selected.
+</ParamField>
+
+<ParamField path="onClose" type="() => void" required>
+  Callback fired when the dropdown should close.
+</ParamField>
+
+<ParamField path="position" type="{ top?: number; bottom?: number; left: number; width?: number }" required>
+  Position configuration for the dropdown.
+</ParamField>
+
+<ParamField path="isVisible" type="boolean" required>
+  Whether the dropdown is visible.
+</ParamField>
+
+<ParamField path="openedViaButton" type="boolean" default="false">
+  If true, shows header with "Browse Tools" title and close button.
+</ParamField>
+
+<ParamField path="selectedCategory" type="string" default="'all'">
+  Currently selected category filter.
+</ParamField>
+
+<ParamField path="categories" type="string[]">
+  Available categories for filtering. Defaults to extracting unique categories from matches.
+</ParamField>
+
+<ParamField path="onCategoryChange" type="(category: string) => void">
+  Callback fired when the selected category changes.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the container.
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Additional inline styles.
+</ParamField>
+
+## Type Definitions
+
+### Tool
+
+```tsx
+interface Tool {
+  /** Unique tool identifier */
+  name: string;
+  /** Category for grouping tools */
+  category: string;
+  /** Description shown below tool name */
+  description?: string;
+  /** Custom icon (defaults to category icon) */
+  icon?: React.ReactNode;
+}
+```
+
+### SlashCommandMatch
+
+```tsx
+interface SlashCommandMatch {
+  tool: Tool;
+  score: number; // Relevance score for search results
+}
+```
+
+## Built-in Category Icons
+
+The component includes icons for these categories:
+
+- **Integrations**: Gmail, Google Calendar, GitHub, Linear, Slack, Notion
+- **Actions**: Search, Documents, Development, Creative, Todos, Reminders
+- **System**: Memory, Notifications, Support, General
+
+## Keyboard Navigation
+
+- **Arrow Up/Down** - Navigate between tools
+- **Enter** - Select highlighted tool
+- **Escape** - Close dropdown
+- **Tab** - Navigate between categories (when multiple exist)
+
+## Accessibility
+
+- Keyboard accessible with proper focus management
+- Auto-scroll to keep selected item in view
+- ARIA labels on interactive elements
+- Semantic button elements
+- Focus trap when opened via button
+
+## Design Notes
+
+- Fixed positioning for proper layering (z-index: 200)
+- Backdrop blur for modern glass effect
+- Smooth animations (200ms fade/slide)
+- Category tabs scroll horizontally on small screens
+- Tool list has maximum height (200px) with scroll
+
+## Common Patterns
+
+### Fuzzy Search
+
+Implement fuzzy search to score matches:
+
+```tsx
+import Fuse from "fuse.js";
+
+const fuse = new Fuse(tools, {
+  keys: ["name", "description", "category"],
+  threshold: 0.3
+});
+
+const results = fuse.search(query);
+const matches = results.map(result => ({
+  tool: result.item,
+  score: 1 - result.score // Invert score (higher is better)
+}));
+```
+
+### Dynamic Tool Loading
+
+```tsx
+const [tools, setTools] = useState<Tool[]>([]);
+
+useEffect(() => {
+  fetch("/api/tools")
+    .then(res => res.json())
+    .then(setTools);
+}, []);
+```
+
+## Related Components
+
+- [Composer](/components/composer) - Uses this component for tool selection
+- [Icons](/components/icons) - Icon system used throughout

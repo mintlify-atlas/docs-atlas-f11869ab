@@ -1,0 +1,190 @@
+---
+title: Code Block
+description: A syntax-highlighted code block with copy, download, line numbers, and support for 40+ programming languages.
+---
+
+<ComponentPreview name="code-block/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add code-block
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install shiki
+    ```
+
+    2. Add Devicon to your HTML (for language icons):
+    ```html
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    ```
+
+    3. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/code-block.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+Display code with beautiful syntax highlighting powered by Shiki.
+
+```tsx
+import { CodeBlock } from "@/components/ui/code-block";
+
+export default function Example() {
+  const code = `function hello(name: string) {
+  console.log(\`Hello, \${name}!\`);
+  return true;
+}`;
+
+  return (
+    <CodeBlock language="typescript">
+      {code}
+    </CodeBlock>
+  );
+}
+```
+
+## Features
+
+### Syntax Highlighting
+
+Shiki provides beautiful, accurate syntax highlighting using VS Code's grammar engine:
+
+```tsx
+<CodeBlock language="python">
+{`def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10))`}
+</CodeBlock>
+```
+
+### Line Numbers
+
+Enable line numbers for easier reference:
+
+```tsx
+<CodeBlock language="javascript" showLineNumbers>
+{`const app = express();
+app.use(express.json());
+app.listen(3000);`}
+</CodeBlock>
+```
+
+### File Names
+
+Show the filename in the header:
+
+```tsx
+<CodeBlock language="tsx" filename="app/page.tsx">
+{`export default function Page() {
+  return <div>Hello World</div>;
+}`}
+</CodeBlock>
+```
+
+### Language Icons
+
+Icons automatically appear for recognized languages using Devicon:
+
+```tsx
+<CodeBlock language="rust">       {/* Shows Rust icon */}
+<CodeBlock language="go">         {/* Shows Go icon */}
+<CodeBlock language="python">     {/* Shows Python icon */}
+<CodeBlock language="typescript"> {/* Shows TypeScript icon */}
+```
+
+### Copy & Download
+
+Built-in copy and download buttons:
+
+- Click the copy icon to copy code to clipboard
+- Click the download icon to save as a file
+- Copy button shows a checkmark on success
+
+## Supported Languages
+
+The component supports 40+ languages including:
+
+- **Web**: JavaScript, TypeScript, HTML, CSS, JSX, TSX
+- **Backend**: Python, Java, Go, Rust, PHP, Ruby, C, C++, C#
+- **Data**: JSON, XML, YAML, SQL
+- **Shell**: Bash, Shell
+- **Other**: Markdown, Kotlin, Swift, Dockerfile
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>children</PropName>
+    <PropType>string</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      The code content to display.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>language</PropName>
+    <PropType>string</PropType>
+    <PropDefault>"plaintext"</PropDefault>
+    <PropDescription>
+      Programming language for syntax highlighting (e.g., "typescript", "python").
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>filename</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Optional filename to display in the header.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>showLineNumbers</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>false</PropDefault>
+    <PropDescription>
+      Show line numbers on the left side.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes for the container.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Styling
+
+The component uses Shiki's GitHub themes:
+
+- **Light mode**: `github-light`
+- **Dark mode**: `github-dark`
+
+Both themes automatically adapt based on your color scheme.
+
+## Accessibility
+
+- Copy and download buttons have proper `aria-label` attributes
+- Language displayed as text when icon unavailable
+- Keyboard accessible controls
+- Code content is selectable and copyable
+- Pre-formatted text maintains proper semantic structure

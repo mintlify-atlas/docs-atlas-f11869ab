@@ -1,0 +1,378 @@
+---
+title: Customization
+description: Learn how to customize Gaia UI components using className, variants, styling approaches, and theming.
+---
+
+Gaia UI components are designed to be highly customizable while maintaining consistency. This guide covers the various ways you can customize components to match your design needs.
+
+## Using className
+
+Every Gaia UI component accepts a `className` prop that allows you to add custom styles or override existing ones.
+
+```tsx
+import { RaisedButton } from "@/components/ui/raised-button";
+
+export default function Example() {
+  return (
+    <RaisedButton className="bg-purple-500 hover:bg-purple-600">
+      Custom Button
+    </RaisedButton>
+  );
+}
+```
+
+The `cn()` utility (from `tailwind-merge`) ensures that your custom classes properly override base classes:
+
+```tsx
+import { cn } from "@/lib/utils";
+
+<div className={cn(
+  "base-classes",
+  variant === "primary" && "primary-classes",
+  className  // Your custom classes take precedence
+)} />
+```
+
+## Component Variants
+
+Many components support variants that change their appearance or behavior. Check the component's props documentation to see available variants.
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export default function Example() {
+  return (
+    <div className="space-y-4">
+      <MessageBubble variant="default">
+        Default variant
+      </MessageBubble>
+      <MessageBubble variant="outline">
+        Outline variant
+      </MessageBubble>
+      <MessageBubble variant="ghost">
+        Ghost variant
+      </MessageBubble>
+    </div>
+  );
+}
+```
+
+## Styling with Tailwind CSS
+
+Gaia UI is built with Tailwind CSS. You can use any Tailwind utility class to customize components.
+
+### Spacing and Layout
+
+```tsx
+<RaisedButton className="px-8 py-4 rounded-2xl">
+  Large Button
+</RaisedButton>
+```
+
+### Colors and Backgrounds
+
+```tsx
+<div className="bg-background text-foreground">
+  <MessageBubble className="bg-muted/50">
+    Custom background
+  </MessageBubble>
+</div>
+```
+
+### Typography
+
+```tsx
+<RaisedButton className="text-lg font-semibold">
+  Bold Text
+</RaisedButton>
+```
+
+### Responsive Design
+
+```tsx
+<RaisedButton className="w-full md:w-auto">
+  Responsive Button
+</RaisedButton>
+```
+
+## Theme Variables
+
+Gaia UI uses CSS variables for theming, which automatically work in both light and dark modes.
+
+### Using Theme Colors
+
+```tsx
+// ✅ Uses theme-aware colors
+<div className="bg-background text-foreground">
+<div className="text-muted-foreground">
+<div className="border-border">
+
+// ❌ Hardcoded colors won't adapt to theme changes
+<div className="bg-white text-black">
+```
+
+### Available Theme Variables
+
+```css
+/* Background colors */
+bg-background
+bg-foreground
+bg-card
+bg-popover
+bg-primary
+bg-secondary
+bg-muted
+bg-accent
+bg-destructive
+
+/* Text colors */
+text-foreground
+text-muted-foreground
+text-card-foreground
+text-popover-foreground
+
+/* Border colors */
+border-border
+border-input
+```
+
+## Custom Styling Approaches
+
+### Inline Styles
+
+For dynamic styles based on props or state:
+
+```tsx
+<RaisedButton
+  style={{
+    opacity: isDisabled ? 0.5 : 1,
+    transition: 'opacity 200ms ease-out'
+  }}
+>
+  Dynamic Button
+</RaisedButton>
+```
+
+### CSS Modules or Custom CSS
+
+For complex custom styles:
+
+```css title="styles.css"
+.custom-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+```
+
+```tsx
+import './styles.css';
+
+<RaisedButton className="custom-button">
+  Gradient Button
+</RaisedButton>
+```
+
+### Tailwind with Arbitrary Values
+
+For one-off custom values:
+
+```tsx
+<RaisedButton className="bg-[#667eea] hover:bg-[#764ba2]">
+  Custom Color
+</RaisedButton>
+```
+
+## Compound Components
+
+Some components are composed of multiple parts. Each part can be styled independently:
+
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
+export default function Example() {
+  return (
+    <Card className="border-2 border-primary">
+      <CardHeader className="bg-primary/10">
+        <CardTitle className="text-xl">Custom Card</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p>Card content here</p>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## Dark Mode Customization
+
+### Conditional Styling for Dark Mode
+
+```tsx
+<div className="bg-white dark:bg-gray-900 text-black dark:text-white">
+  Content that adapts to theme
+</div>
+```
+
+### Testing Both Modes
+
+Always test your customizations in both light and dark modes:
+
+```tsx
+import { useTheme } from "next-themes";
+
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  
+  return (
+    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      Toggle Theme
+    </button>
+  );
+}
+```
+
+## Animation Customization
+
+Customize transitions and animations:
+
+```tsx
+<RaisedButton className="transition-all duration-300 ease-in-out hover:scale-105">
+  Animated Button
+</RaisedButton>
+```
+
+### Respecting User Preferences
+
+Always respect `prefers-reduced-motion`:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .animated-element {
+    animation: none;
+    transition: none;
+  }
+}
+```
+
+## Forwarding Refs
+
+All components forward refs, allowing you to access the underlying DOM element:
+
+```tsx
+import { useRef } from "react";
+import { RaisedButton } from "@/components/ui/raised-button";
+
+export default function Example() {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  
+  const handleClick = () => {
+    buttonRef.current?.focus();
+  };
+  
+  return <RaisedButton ref={buttonRef}>Button</RaisedButton>;
+}
+```
+
+## Best Practices
+
+### Do's
+
+- Use theme variables for colors (`bg-background`, `text-foreground`)
+- Stick to Tailwind's spacing scale (`p-4`, `gap-6`, `space-y-4`)
+- Test customizations in both light and dark modes
+- Respect accessibility (maintain contrast ratios, touch targets)
+- Use consistent styling patterns across your application
+
+### Don'ts
+
+- Don't use hardcoded colors that break in dark mode
+- Don't remove focus indicators without adding custom ones
+- Don't use `!important` to override styles (use more specific selectors)
+- Don't mix too many different styling approaches
+- Don't animate width/height (use transform instead)
+
+## Design System Consistency
+
+Maintain consistency with Gaia UI's design philosophy:
+
+### Spacing Guidelines
+
+```tsx
+// Component padding guidelines
+<Card className="p-6">                    // Outer container
+  <CardHeader className="pb-4">           // Section spacing
+    <CardTitle className="mb-2">          // Title to content
+  </CardHeader>
+  <CardContent className="space-y-4">     // Content gaps
+```
+
+### Typography Scale
+
+```tsx
+<div>
+  <h2 className="text-xl font-semibold">Heading</h2>
+  <p className="text-base font-normal">Body text</p>
+  <span className="text-sm text-muted-foreground">Label</span>
+</div>
+```
+
+### Color Usage
+
+```tsx
+// Primary actions
+<RaisedButton className="bg-primary text-primary-foreground">
+
+// Secondary actions  
+<RaisedButton className="bg-secondary text-secondary-foreground">
+
+// Destructive actions
+<RaisedButton className="bg-destructive text-destructive-foreground">
+```
+
+## Example: Fully Customized Component
+
+Here's a complete example showing various customization techniques:
+
+```tsx
+import { RaisedButton } from "@/components/ui/raised-button";
+import { Icons } from "@/components/ui/icons";
+
+export default function CustomButton() {
+  return (
+    <RaisedButton
+      className="
+        group
+        relative
+        px-8 py-4
+        bg-gradient-to-r from-purple-500 to-pink-500
+        hover:from-purple-600 hover:to-pink-600
+        text-white font-semibold
+        rounded-2xl
+        shadow-xl hover:shadow-2xl
+        transition-all duration-300
+        transform hover:scale-105
+        focus-visible:ring-4 focus-visible:ring-purple-500/50
+      "
+    >
+      <span className="flex items-center gap-2">
+        <Icons.sparkles className="size-5 group-hover:animate-spin" />
+        Custom Button
+      </span>
+    </RaisedButton>
+  );
+}
+```
+
+This example demonstrates:
+- Custom spacing (`px-8 py-4`)
+- Gradient backgrounds
+- Hover states
+- Animations and transforms
+- Focus indicators
+- Icon integration
+- Group hover effects

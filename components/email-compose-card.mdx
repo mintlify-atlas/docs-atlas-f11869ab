@@ -1,0 +1,262 @@
+---
+title: "Email Compose Card"
+description: "An AI-powered email composition card with recipient validation, smart inputs, and beautiful styling."
+---
+
+The Email Compose Card provides a polished interface for composing emails with recipient management, inline editing, and validation. Perfect for AI agents that need to draft and send emails.
+
+## Preview
+
+<CodeGroup>
+```tsx Default
+import { EmailComposeCard } from "@/components/ui/email-compose-card";
+
+const emailData = {
+  to: ["user@example.com"],
+  subject: "Project Update",
+  body: "Hi there,\n\nI wanted to share the latest updates on our project. We've made significant progress this week...\n\nBest regards"
+};
+
+function handleSend(data) {
+  console.log("Sending email:", data);
+  // Your email sending logic
+}
+
+export default function Example() {
+  return (
+    <EmailComposeCard 
+      emailData={emailData}
+      onSend={handleSend}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/email-compose-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @heroui/react zod
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy `email-compose-card.tsx` to your components directory
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  This component currently uses HeroUI components. A shadcn/ui migration is planned for future updates.
+</Warning>
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { EmailComposeCard } from "@/components/ui/email-compose-card";
+
+const emailData = {
+  to: ["recipient@example.com"],
+  subject: "Hello",
+  body: "Your message here"
+};
+
+<EmailComposeCard 
+  emailData={emailData}
+  onSend={(data) => console.log(data)}
+/>
+```
+
+### Draft Email
+
+```tsx
+const draftEmail = {
+  to: ["team@company.com"],
+  subject: "Q1 Review",
+  body: "Draft content...",
+  draft_id: "draft_123456"
+};
+
+<EmailComposeCard 
+  emailData={draftEmail}
+  onSend={async (data) => {
+    await sendDraft(data.draft_id, data);
+  }}
+/>
+```
+
+### Reply to Thread
+
+```tsx
+const replyEmail = {
+  to: ["colleague@company.com"],
+  subject: "Re: Meeting Notes",
+  body: "Thanks for the notes...",
+  thread_id: "thread_789"
+};
+
+<EmailComposeCard emailData={replyEmail} />
+```
+
+### Multiple Recipients
+
+```tsx
+const emailData = {
+  to: [
+    "john@example.com",
+    "sarah@example.com",
+    "team@company.com"
+  ],
+  subject: "Team Update",
+  body: "Hello everyone..."
+};
+
+<EmailComposeCard emailData={emailData} />
+```
+
+## Props
+
+<ResponseField name="emailData" type="EmailData" required>
+  The email data object
+  
+  <Expandable title="EmailData properties">
+    <ResponseField name="to" type="string[]" required>
+      Array of recipient email addresses. These are shown as suggestions that users can select from.
+    </ResponseField>
+    
+    <ResponseField name="subject" type="string" required>
+      Email subject line
+    </ResponseField>
+    
+    <ResponseField name="body" type="string" required>
+      Email body content. Supports multi-line text with `\n` for line breaks.
+    </ResponseField>
+    
+    <ResponseField name="draft_id" type="string">
+      Unique identifier for draft emails
+    </ResponseField>
+    
+    <ResponseField name="thread_id" type="string">
+      Thread ID for email replies
+    </ResponseField>
+    
+    <ResponseField name="cc" type="string[]">
+      CC recipients (not currently displayed in UI)
+    </ResponseField>
+    
+    <ResponseField name="bcc" type="string[]">
+      BCC recipients (not currently displayed in UI)
+    </ResponseField>
+    
+    <ResponseField name="is_html" type="boolean">
+      Whether the body contains HTML content
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="onSend" type="(data: EmailData) => void | Promise<void>">
+  Callback function called when the send button is clicked. Receives the complete email data including selected recipients.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Recipient Management
+
+- **Smart Suggestions**: Provided email addresses appear as clickable chips
+- **Custom Emails**: Users can add additional recipients not in the suggestion list
+- **Email Validation**: Real-time validation using Zod schema
+- **Visual Selection**: Selected recipients are highlighted and can be toggled
+
+### Inline Editing
+
+- **Subject**: Click the edit icon to modify the subject line
+- **Body**: Click the edit icon to switch to a textarea for full editing
+- **Auto-focus**: Input fields automatically focus when entering edit mode
+- **Keyboard Support**: Press Enter to save changes
+
+### Form Validation
+
+The component uses Zod for comprehensive validation:
+
+- At least one recipient required
+- All recipients must be valid email addresses
+- Subject must be 1-200 characters
+- Body must be 1-10,000 characters
+
+### Visual States
+
+- **Loading State**: Shows spinner while sending
+- **Draft Badge**: Displays when `draft_id` is present
+- **Reply Badge**: Displays when `thread_id` is present
+- **Disabled State**: Send button disabled when no recipients selected
+
+## Recipient Selection Modal
+
+The modal provides an intuitive interface for managing recipients:
+
+1. Click suggested emails to toggle selection
+2. Add custom emails using the input field
+3. Press Enter or click + to add custom emails
+4. See selected count in the Done button
+5. Click Done to apply changes
+
+## Email Format
+
+The `body` field supports multi-line text with `\n` for line breaks:
+
+```tsx
+const body = `Hi there,
+
+This is paragraph one.
+
+This is paragraph two.
+
+Best regards,
+Your Name`;
+```
+
+The component preserves whitespace and line breaks using `whitespace-pre-line` CSS.
+
+## Styling
+
+The card uses a clean, flat design with:
+
+- Zinc color palette for light/dark mode compatibility
+- Rounded corners (rounded-3xl)
+- Subtle dividers between sections
+- Smooth transitions on interactions
+- ScrollShadow for overflow content
+
+## Accessibility
+
+- Semantic HTML structure
+- ARIA labels on icon-only buttons
+- Keyboard navigation support
+- Focus management in edit mode
+- Form validation with error messages
+
+<Tip>
+  For AI agent use cases, provide the recipient emails in the `to` array as suggestions. Users can then select which ones to actually send to.
+</Tip>
+
+<Note>
+  This component handles the UI for email composition. You'll need to implement the actual email sending logic in the `onSend` callback.
+</Note>

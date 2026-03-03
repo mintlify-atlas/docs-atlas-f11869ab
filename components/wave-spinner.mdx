@@ -1,0 +1,307 @@
+---
+title: Wave Spinner
+description: A beautiful animated loading spinner with wave effects, multiple patterns, colors, and highly customizable animations.
+---
+
+<ComponentPreview name="wave-spinner/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add wave-spinner
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. Install the required dependencies:
+    ```bash
+    npm install class-variance-authority
+    ```
+
+    2. Copy the component files from the registry:
+    ```tsx
+    // registry/new-york/ui/wave-spinner.tsx
+    // registry/new-york/ui/wave-spinner.css
+    ```
+
+    3. Import the CSS in your layout or global styles:
+    ```tsx
+    import "@/components/ui/wave-spinner.css";
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+A highly customizable loading spinner with wave animations.
+
+```tsx
+import { WaveSpinner } from "@/components/ui/wave-spinner";
+
+export default function Example() {
+  return <WaveSpinner />;
+}
+```
+
+## Features
+
+### Colors
+
+Choose from 10 color presets or use any CSS color:
+
+```tsx
+{/* Color presets */}
+<WaveSpinner color="primary" />   {/* GAIA blue #00bbff */}
+<WaveSpinner color="success" />   {/* Green */}
+<WaveSpinner color="danger" />    {/* Red */}
+<WaveSpinner color="warning" />   {/* Amber */}
+<WaveSpinner color="purple" />    {/* Purple */}
+
+{/* Custom colors */}
+<WaveSpinner color="#ff6b6b" />   {/* Hex */}
+<WaveSpinner color="rgb(255, 107, 107)" /> {/* RGB */}
+<WaveSpinner color="hsl(0, 100%, 71%)" />  {/* HSL */}
+```
+
+Available presets: `primary`, `success`, `warning`, `danger`, `muted`, `purple`, `cyan`, `rose`, `indigo`, `emerald`
+
+### Sizes
+
+Five size options:
+
+```tsx
+<WaveSpinner size="xs" />  {/* 3px dots */}
+<WaveSpinner size="sm" />  {/* 4px dots */}
+<WaveSpinner size="md" />  {/* 6px dots - Default */}
+<WaveSpinner size="lg" />  {/* 8px dots */}
+<WaveSpinner size="xl" />  {/* 10px dots */}
+```
+
+### Grid Patterns
+
+Seven layout patterns:
+
+```tsx
+<WaveSpinner pattern="square3x3" />  {/* 3x3 grid - Default */}
+<WaveSpinner pattern="square2x2" />  {/* 2x2 grid */}
+<WaveSpinner pattern="square4x4" />  {/* 4x4 grid */}
+<WaveSpinner pattern="line" />      {/* Single row */}
+<WaveSpinner pattern="diamond" />   {/* Diamond shape */}
+<WaveSpinner pattern="cross" />     {/* Plus sign */}
+<WaveSpinner pattern="circle" />    {/* Circular arrangement */}
+```
+
+### Animation Patterns
+
+Nine wave animation styles:
+
+```tsx
+<WaveSpinner animation="diagonalTL" />  {/* Top-left to bottom-right */}
+<WaveSpinner animation="diagonalTR" />  {/* Top-right to bottom-left */}
+<WaveSpinner animation="diagonalBL" />  {/* Bottom-left to top-right */}
+<WaveSpinner animation="diagonalBR" />  {/* Bottom-right to top-left */}
+<WaveSpinner animation="ripple" />      {/* From center outward */}
+<WaveSpinner animation="horizontal" />  {/* Left to right waves */}
+<WaveSpinner animation="vertical" />    {/* Top to bottom waves */}
+<WaveSpinner animation="random" />      {/* Pseudo-random pattern */}
+<WaveSpinner animation="spiral" />      {/* Spiral from center */}
+```
+
+### Dot Shapes
+
+Three shape options:
+
+```tsx
+<WaveSpinner dotShape="square" />   {/* Sharp corners - Default */}
+<WaveSpinner dotShape="rounded" />  {/* Rounded corners */}
+<WaveSpinner dotShape="circle" />   {/* Fully circular */}
+```
+
+### Animation Speed
+
+Custom duration in seconds:
+
+```tsx
+<WaveSpinner duration={0.5} />  {/* Fast */}
+<WaveSpinner duration={0.7} />  {/* Default */}
+<WaveSpinner duration={1.2} />  {/* Slow */}
+```
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>color</PropName>
+    <PropType>ColorPreset | string</PropType>
+    <PropDefault>"primary"</PropDefault>
+    <PropDescription>
+      Dot color. Use a preset name or any CSS color value.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>size</PropName>
+    <PropType>"xs" | "sm" | "md" | "lg" | "xl"</PropType>
+    <PropDefault>"md"</PropDefault>
+    <PropDescription>
+      Size of the spinner dots.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>pattern</PropName>
+    <PropType>GridPattern</PropType>
+    <PropDefault>"square3x3"</PropDefault>
+    <PropDescription>
+      Grid layout pattern (square3x3, square2x2, square4x4, line, diamond, cross, circle).
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>animation</PropName>
+    <PropType>DelayPattern</PropType>
+    <PropDefault>"diagonalTL"</PropDefault>
+    <PropDescription>
+      Wave animation pattern (diagonalTL, diagonalTR, ripple, horizontal, vertical, etc.).
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>duration</PropName>
+    <PropType>number</PropType>
+    <PropDefault>0.7</PropDefault>
+    <PropDescription>
+      Animation duration in seconds.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>dotShape</PropName>
+    <PropType>"square" | "rounded" | "circle"</PropType>
+    <PropDefault>"square"</PropDefault>
+    <PropDescription>
+      Shape of individual dots.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes for customization.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>aria-label</PropName>
+    <PropType>string</PropType>
+    <PropDefault>"Loading"</PropDefault>
+    <PropDescription>
+      Accessible label for screen readers.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Examples
+
+### Loading Button
+
+```tsx
+<button disabled className="flex items-center gap-2 px-4 py-2">
+  <WaveSpinner size="sm" color="white" />
+  <span>Loading...</span>
+</button>
+```
+
+### Centered Page Loader
+
+```tsx
+<div className="flex items-center justify-center min-h-screen">
+  <div className="text-center">
+    <WaveSpinner size="lg" />
+    <p className="mt-4 text-muted-foreground">Loading your data...</p>
+  </div>
+</div>
+```
+
+### Inline Spinner
+
+```tsx
+<p className="flex items-center gap-2">
+  Processing
+  <WaveSpinner size="xs" pattern="line" />
+</p>
+```
+
+### Custom Themed
+
+```tsx
+<WaveSpinner
+  color="#ff6b6b"
+  size="lg"
+  pattern="circle"
+  animation="ripple"
+  dotShape="circle"
+  duration={1.0}
+/>
+```
+
+## Color Presets
+
+All available color presets:
+
+| Preset | Color | Hex |
+|--------|-------|-----|
+| `primary` | GAIA Blue | `#00bbff` |
+| `success` | Green | `#22c55e` |
+| `warning` | Amber | `#f59e0b` |
+| `danger` | Red | `#ef4444` |
+| `muted` | Zinc | `#71717a` |
+| `purple` | Purple | `#a855f7` |
+| `cyan` | Cyan | `#06b6d4` |
+| `rose` | Rose | `#f43f5e` |
+| `indigo` | Indigo | `#6366f1` |
+| `emerald` | Emerald | `#10b981` |
+
+## Animation Details
+
+The spinner uses CSS keyframe animations:
+
+```css
+@keyframes waveSpinnerPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+```
+
+Each dot has a calculated delay based on the chosen animation pattern, creating the wave effect.
+
+## Reduced Motion
+
+Respects user preferences:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  [role="status"] div {
+    animation-duration: 0s !important;
+    opacity: 0.7 !important;
+    transform: scale(1) !important;
+  }
+}
+```
+
+Users with reduced motion preferences see a static spinner.
+
+## Accessibility
+
+- Has `role="status"` for screen reader announcements
+- Customizable `aria-label` for context-specific loading messages
+- Respects `prefers-reduced-motion`
+- Sufficient color contrast for all presets
+- Non-intrusive animation timing

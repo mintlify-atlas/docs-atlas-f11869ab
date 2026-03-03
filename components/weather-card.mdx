@@ -1,0 +1,267 @@
+---
+title: "Weather Card"
+description: "A beautiful, interactive weather card component with forecast, detailed metrics, and multiple weather conditions support."
+---
+
+The Weather Card displays current weather information with a dynamic themed interface that adapts to weather conditions. It includes temperature unit conversion, forecast display, and detailed weather metrics.
+
+## Preview
+
+<CodeGroup>
+```tsx Default
+import { WeatherCard } from "@/components/ui/weather-card";
+
+const weatherData = {
+  coord: { lon: -122.4194, lat: 37.7749 },
+  weather: [{
+    id: 800,
+    main: "Clear",
+    description: "clear sky",
+    icon: "01d"
+  }],
+  main: {
+    temp: 22,
+    feels_like: 21,
+    temp_min: 18,
+    temp_max: 25,
+    pressure: 1013,
+    humidity: 60
+  },
+  visibility: 10000,
+  wind: { speed: 3.5, deg: 180 },
+  dt: 1699641600,
+  sys: {
+    country: "US",
+    sunrise: 1699622400,
+    sunset: 1699660800
+  },
+  timezone: -28800,
+  name: "San Francisco",
+  location: {
+    city: "San Francisco",
+    country: "United States",
+    region: "California"
+  }
+};
+
+export default function Example() {
+  return <WeatherCard weatherData={weatherData} />;
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/weather-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy the weather card components:
+        - `weather-card.tsx`
+        - `weather-detail-item.tsx`
+        - `weather-icons.tsx`
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { WeatherCard } from "@/components/ui/weather-card";
+
+<WeatherCard weatherData={weatherData} />
+```
+
+### With Forecast
+
+```tsx
+const weatherDataWithForecast = {
+  ...weatherData,
+  forecast: [
+    {
+      date: "2024-03-04",
+      timestamp: 1699728000,
+      temp_min: 15,
+      temp_max: 23,
+      humidity: 65,
+      weather: {
+        main: "Clouds",
+        description: "partly cloudy",
+        icon: "02d"
+      }
+    },
+    // ... more days
+  ]
+};
+
+<WeatherCard 
+  weatherData={weatherDataWithForecast}
+  showForecast={true}
+/>
+```
+
+### Temperature Units
+
+```tsx
+// Default to Fahrenheit
+<WeatherCard 
+  weatherData={weatherData}
+  defaultUnit="fahrenheit"
+/>
+
+// Default to Celsius
+<WeatherCard 
+  weatherData={weatherData}
+  defaultUnit="celsius"
+/>
+```
+
+### Without Details Section
+
+```tsx
+<WeatherCard 
+  weatherData={weatherData}
+  showDetails={false}
+/>
+```
+
+## Props
+
+<ResponseField name="weatherData" type="WeatherData" required>
+  The weather data object containing all weather information
+  
+  <Expandable title="WeatherData properties">
+    <ResponseField name="location" type="WeatherLocation" required>
+      Location information
+      - `city`: string - City name
+      - `country`: string | null - Country name
+      - `region`: string | null - Region/state name
+    </ResponseField>
+    
+    <ResponseField name="weather" type="WeatherCondition[]" required>
+      Array of weather conditions
+      - `id`: number - Weather condition ID
+      - `main`: string - Weather category (Clear, Clouds, Rain, etc.)
+      - `description`: string - Detailed description
+      - `icon`: string - Weather icon code
+    </ResponseField>
+    
+    <ResponseField name="main" type="WeatherMain" required>
+      Main weather metrics
+      - `temp`: number - Current temperature (Celsius)
+      - `feels_like`: number - Feels like temperature
+      - `temp_min`: number - Minimum temperature
+      - `temp_max`: number - Maximum temperature
+      - `pressure`: number - Atmospheric pressure (hPa)
+      - `humidity`: number - Humidity percentage
+    </ResponseField>
+    
+    <ResponseField name="wind" type="WeatherWind" required>
+      Wind information
+      - `speed`: number - Wind speed (m/s)
+      - `deg`: number - Wind direction (degrees)
+    </ResponseField>
+    
+    <ResponseField name="sys" type="WeatherSys" required>
+      System information
+      - `country`: string - Country code
+      - `sunrise`: number - Sunrise timestamp
+      - `sunset`: number - Sunset timestamp
+    </ResponseField>
+    
+    <ResponseField name="dt" type="number" required>
+      Current timestamp
+    </ResponseField>
+    
+    <ResponseField name="timezone" type="number" required>
+      Timezone offset in seconds
+    </ResponseField>
+    
+    <ResponseField name="visibility" type="number">
+      Visibility in meters (optional)
+    </ResponseField>
+    
+    <ResponseField name="forecast" type="ForecastDay[]">
+      Array of forecast days (optional)
+      - `date`: string - Date string
+      - `timestamp`: number - Timestamp
+      - `temp_min`: number - Min temperature
+      - `temp_max`: number - Max temperature
+      - `humidity`: number - Humidity percentage
+      - `weather`: object - Weather condition
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="showForecast" type="boolean" default="true">
+  Whether to show the weekly forecast section
+</ResponseField>
+
+<ResponseField name="showDetails" type="boolean" default="true">
+  Whether to show additional weather information (wind, humidity, etc.)
+</ResponseField>
+
+<ResponseField name="defaultUnit" type="'celsius' | 'fahrenheit'" default="'celsius'">
+  Default temperature unit to display
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Dynamic Weather Themes
+
+The card automatically adapts its gradient background and icon colors based on weather conditions:
+
+- **Clear**: Warm yellow-to-orange gradient
+- **Clouds**: Blue-to-slate gradient
+- **Rain**: Dark blue-to-gray gradient
+- **Snow**: Light blue gradient
+- **Thunderstorm**: Purple-to-slate gradient
+- **Fog/Mist**: Gray gradient
+- And many more atmospheric conditions
+
+### Temperature Unit Toggle
+
+Users can easily switch between Celsius and Fahrenheit using the thermometer icon dropdown menu.
+
+### Expandable Sections
+
+Both the forecast and additional information sections are collapsible, allowing users to control the card's height.
+
+### Weather Icons
+
+Custom weather icons that match the current conditions, with color coding that aligns with the card's theme.
+
+## Data Source
+
+This component is designed to work with data from weather APIs like OpenWeatherMap. The weather condition IDs follow the [OpenWeatherMap weather condition codes](https://openweathermap.org/weather-conditions).
+
+## Accessibility
+
+- Semantic HTML structure
+- ARIA labels on interactive elements
+- Keyboard navigation support
+- Screen reader friendly
+
+<Note>
+  Temperature values should be provided in Celsius. The component handles conversion to Fahrenheit automatically.
+</Note>

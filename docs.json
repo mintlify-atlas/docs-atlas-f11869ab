@@ -1,122 +1,122 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Gaia UI",
+  "theme": "willow",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#00bbff",
+    "light": "#00bbff",
+    "dark": "#00bbff"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/theexperiencecompany/gaia-ui"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/theexperiencecompany/gaia-ui",
+      "discord": "https://discord.heygaia.io",
+      "x": "https://twitter.com/trygaia"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "installation",
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Concepts",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "concepts/design-philosophy",
+              "concepts/accessibility",
+              "concepts/theming"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Guides",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/adding-components",
+              "guides/customization",
+              "guides/contributing"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Components",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Chat & Messaging",
             "pages": [
-              "api-reference/introduction"
+              "components/composer",
+              "components/message-bubble",
+              "components/tool-calls-section",
+              "components/slash-command-dropdown"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Cards & Displays",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "components/weather-card",
+              "components/email-compose-card",
+              "components/calendar-event-card",
+              "components/notification-card",
+              "components/goal-card",
+              "components/pricing-card",
+              "components/holo-card"
+            ]
+          },
+          {
+            "group": "Navigation",
+            "pages": [
+              "components/navbar-menu",
+              "components/nested-menu"
+            ]
+          },
+          {
+            "group": "Interactive Elements",
+            "pages": [
+              "components/raised-button",
+              "components/github-stars-button",
+              "components/model-selector",
+              "components/search-results-tabs"
+            ]
+          },
+          {
+            "group": "Data & Visualization",
+            "pages": [
+              "components/knowledge-graph",
+              "components/code-block",
+              "components/todo-item"
+            ]
+          },
+          {
+            "group": "Media & Files",
+            "pages": [
+              "components/file-dropzone",
+              "components/file-preview",
+              "components/link-preview"
+            ]
+          },
+          {
+            "group": "UI Elements",
+            "pages": [
+              "components/author-tooltip",
+              "components/wave-spinner",
+              "components/icons"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

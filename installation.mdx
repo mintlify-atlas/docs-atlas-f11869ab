@@ -1,0 +1,211 @@
+---
+title: Installation
+description: Install Gaia UI in your Next.js project using the CLI or manually configure it with shadcn.
+---
+
+# Installation
+
+Gaia UI components can be added to your project in two ways: using the official Gaia UI CLI (recommended) or manually using the shadcn CLI with our registry.
+
+## Prerequisites
+
+Before installing Gaia UI, make sure you have:
+
+- **Node.js 18+** installed
+- A **Next.js project** (version 13+)
+- **Tailwind CSS** configured in your project
+
+If you don't have a Next.js project yet, create one:
+
+<CodeGroup>
+```bash npm
+npx create-next-app@latest my-app
+cd my-app
+```
+
+```bash yarn
+yarn create next-app my-app
+cd my-app
+```
+
+```bash pnpm
+pnpm create next-app my-app
+cd my-app
+```
+</CodeGroup>
+
+## Method 1: Using Gaia UI CLI (Recommended)
+
+The easiest way to add components is using the official `@heygaia/ui` CLI:
+
+<Steps>
+  <Step title="Add a component">
+    Use the `add` command to install any component:
+
+    <CodeGroup>
+    ```bash npm
+    npx @heygaia/ui add composer
+    ```
+
+    ```bash yarn
+    yarn dlx @heygaia/ui add composer
+    ```
+
+    ```bash pnpm
+    pnpm dlx @heygaia/ui add composer
+    ```
+    </CodeGroup>
+
+    This will:
+    - Download the component and its dependencies
+    - Install required npm packages
+    - Add the component to your `components/ui` directory
+  </Step>
+
+  <Step title="Add multiple components at once">
+    You can install multiple components in a single command:
+
+    <CodeGroup>
+    ```bash npm
+    npx @heygaia/ui add raised-button message-bubble composer
+    ```
+
+    ```bash yarn
+    yarn dlx @heygaia/ui add raised-button message-bubble composer
+    ```
+
+    ```bash pnpm
+    pnpm dlx @heygaia/ui add raised-button message-bubble composer
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Install base dependencies">
+    Gaia UI components use standard shadcn/ui base components. Install them separately:
+
+    <CodeGroup>
+    ```bash npm
+    npx shadcn@latest add button tooltip avatar dropdown-menu popover skeleton
+    ```
+
+    ```bash yarn
+    yarn dlx shadcn@latest add button tooltip avatar dropdown-menu popover skeleton
+    ```
+
+    ```bash pnpm
+    pnpm dlx shadcn@latest add button tooltip avatar dropdown-menu popover skeleton
+    ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Method 2: Using shadcn CLI Directly
+
+You can also use the shadcn CLI directly with full registry URLs:
+
+<Steps>
+  <Step title="Add component with full URL">
+    Use the full registry URL for any component:
+
+    <CodeGroup>
+    ```bash npm
+    npx shadcn@latest add https://ui.heygaia.io/r/composer.json
+    ```
+
+    ```bash yarn
+    yarn dlx shadcn@latest add https://ui.heygaia.io/r/composer.json
+    ```
+
+    ```bash pnpm
+    pnpm dlx shadcn@latest add https://ui.heygaia.io/r/composer.json
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Configure namespace (optional)">
+    For a cleaner syntax, configure the `@heygaia` namespace in your `components.json`:
+
+    ```json
+    {
+      "registries": {
+        "@heygaia": "https://ui.heygaia.io/r/{name}.json"
+      }
+    }
+    ```
+
+    Then use namespace syntax:
+
+    <CodeGroup>
+    ```bash npm
+    npx shadcn@latest add @heygaia/composer
+    ```
+
+    ```bash yarn
+    yarn dlx shadcn@latest add @heygaia/composer
+    ```
+
+    ```bash pnpm
+    pnpm dlx shadcn@latest add @heygaia/composer
+    ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Manual Installation
+
+For complete control, you can manually copy components from the [GitHub repository](https://github.com/theexperiencecompany/ui) into your project:
+
+<Steps>
+  <Step title="Copy component files">
+    Navigate to the `registry/new-york/ui` directory and copy the component files you need to your project's `components/ui` directory.
+  </Step>
+
+  <Step title="Install dependencies">
+    Check the `registry.json` file for the component's dependencies and install them:
+
+    ```bash
+    npm install [dependencies]
+    ```
+  </Step>
+
+  <Step title="Update imports">
+    Adjust import paths in the component files to match your project structure.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Missing base components
+
+If you see errors about missing components like `Button` or `Tooltip`, install the shadcn base components:
+
+```bash
+npx shadcn@latest add button tooltip avatar
+```
+
+### Import path errors
+
+Make sure your `tsconfig.json` or `jsconfig.json` has the `@/` path alias configured:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+### TypeScript errors
+
+Ensure you're using TypeScript 5.0 or higher:
+
+```bash
+npm install -D typescript@latest
+```
+
+## Next Steps
+
+Now that you have Gaia UI installed, follow the [Quick Start guide](/quickstart) to add your first component to your app.

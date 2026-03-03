@@ -1,0 +1,375 @@
+---
+title: Nested Menu
+description: A hover-activated nested menu component for multi-level navigation with smooth animations.
+---
+
+<ComponentPreview name="nested-menu/default" />
+
+## Settings Menu Style
+
+<ComponentPreview name="nested-menu/settings-style" />
+
+## Usage in Gaia
+
+Perfect for settings menus, context menus, and multi-level navigation. Hover-based submenus that feel responsive and natural.
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="automatic">
+    <InstallCommand component="nested-menu" />
+  </TabsContent>
+
+  <TabsContent value="manual">
+
+Copy and paste the following code into your project.
+
+<SourceCode filePath="registry/new-york/ui/nested-menu.tsx" />
+
+Install required dependencies:
+
+```bash
+pnpm add @radix-ui/react-popover
+```
+
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+```tsx
+import { NestedMenu } from "@/components/ui/nested-menu";
+import { HugeiconsIcon, Settings01Icon, BookOpen02Icon } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+
+export default function Example() {
+  const menuSections = [
+    {
+      title: "Resources",
+      items: [
+        {
+          key: "documentation",
+          label: "Documentation",
+          icon: (props) => <HugeiconsIcon icon={BookOpen02Icon} {...props} />,
+          onSelect: () => console.log("Documentation clicked"),
+        },
+        {
+          key: "download",
+          label: "Download",
+          hasSubmenu: true,
+          submenuItems: [
+            {
+              key: "mac",
+              label: "macOS",
+              onSelect: () => console.log("Download macOS"),
+            },
+            {
+              key: "windows",
+              label: "Windows",
+              onSelect: () => console.log("Download Windows"),
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  return (
+    <NestedMenu
+      sections={menuSections}
+      trigger={<Button>Open Menu</Button>}
+      side="bottom"
+      align="start"
+    />
+  );
+}
+```
+
+## Examples
+
+### Settings Menu
+
+Create a comprehensive settings menu with submenus:
+
+```tsx
+const settingsMenu = [
+  {
+    title: "Settings",
+    items: [
+      {
+        key: "profile",
+        label: "Profile",
+        icon: (props) => <HugeiconsIcon icon={UserCircleIcon} {...props} />,
+        onSelect: () => navigate("/profile"),
+      },
+      {
+        key: "appearance",
+        label: "Appearance",
+        icon: (props) => <HugeiconsIcon icon={PaletteIcon} {...props} />,
+        hasSubmenu: true,
+        submenuItems: [
+          {
+            key: "theme-light",
+            label: "Light Mode",
+            onSelect: () => setTheme("light"),
+          },
+          {
+            key: "theme-dark",
+            label: "Dark Mode",
+            onSelect: () => setTheme("dark"),
+          },
+          {
+            key: "theme-auto",
+            label: "System",
+            onSelect: () => setTheme("system"),
+          },
+        ],
+      },
+    ],
+  },
+];
+```
+
+### Context Menu with Sections
+
+Organize menu items into multiple sections:
+
+```tsx
+const contextMenu = [
+  {
+    items: [
+      {
+        key: "edit",
+        label: "Edit",
+        icon: EditIcon,
+        onSelect: () => handleEdit(),
+      },
+      {
+        key: "duplicate",
+        label: "Duplicate",
+        icon: CopyIcon,
+        onSelect: () => handleDuplicate(),
+      },
+    ],
+    showDivider: true,
+  },
+  {
+    items: [
+      {
+        key: "delete",
+        label: "Delete",
+        icon: TrashIcon,
+        variant: "danger",
+        onSelect: () => handleDelete(),
+      },
+    ],
+  },
+];
+```
+
+### Custom Icon Colors
+
+Highlight specific menu items with custom icon colors:
+
+```tsx
+const items = [
+  {
+    key: "upgrade",
+    label: "Upgrade to Pro",
+    icon: CircleArrowUpIcon,
+    iconColor: "#00bbff",
+    className: "text-[#00bbff] font-medium",
+    onSelect: () => navigate("/upgrade"),
+  },
+];
+```
+
+### With Separators
+
+Add visual separators between menu items:
+
+```tsx
+const items = [
+  {
+    key: "profile",
+    label: "Profile",
+    onSelect: () => {},
+    separator: true, // Adds a divider after this item
+  },
+  {
+    key: "settings",
+    label: "Settings",
+    onSelect: () => {},
+  },
+];
+```
+
+### Controlled State
+
+Control the menu open state externally:
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+return (
+  <NestedMenu
+    sections={menuSections}
+    trigger={<Button>Menu</Button>}
+    open={isOpen}
+    onOpenChange={setIsOpen}
+  />
+);
+```
+
+### Custom Positioning
+
+Control where the menu appears:
+
+```tsx
+<NestedMenu
+  sections={menuSections}
+  trigger={<Button>Menu</Button>}
+  side="right" // "top" | "right" | "bottom" | "left"
+  align="start" // "start" | "center" | "end"
+  sideOffset={16}
+/>
+```
+
+### Using the Hook
+
+For custom implementations, use the `useNestedMenu` hook:
+
+```tsx
+import { useNestedMenu, NestedMenuTooltip } from "@/components/ui/nested-menu";
+
+function CustomMenu() {
+  const {
+    isOpen,
+    setIsOpen,
+    itemRef,
+    handleMouseEnter,
+    handleMouseLeave,
+    cancelClose,
+  } = useNestedMenu();
+
+  return (
+    <>
+      <button
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        Hover for submenu
+      </button>
+      <NestedMenuTooltip
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        itemRef={itemRef}
+        menuItems={submenuItems}
+        onMouseEnter={cancelClose}
+        onMouseLeave={handleMouseLeave}
+      />
+    </>
+  );
+}
+```
+
+## Features
+
+- **Hover Activation**: Submenus open on hover with smooth transitions
+- **Multi-level Support**: Nested submenus up to any depth
+- **Smart Timing**: Delay handling prevents accidental closes
+- **Section Support**: Organize items into titled sections
+- **Icon Support**: Add icons to menu items with custom colors
+- **Variants**: Built-in "danger" variant for destructive actions
+- **Separators**: Visual dividers between items or sections
+- **Custom Styling**: Full className support for customization
+- **Keyboard Accessible**: Proper focus management and keyboard support
+- **Controlled/Uncontrolled**: Works both ways
+- **Position Control**: Flexible positioning options
+
+## Props
+
+### NestedMenu
+
+| Prop          | Type                           | Default   | Description                          |
+| ------------- | ------------------------------ | --------- | ------------------------------------ |
+| sections      | NestedMenuSectionProps[]       | -         | Array of menu sections               |
+| trigger       | React.ReactNode                | -         | Element that triggers the menu       |
+| iconClassName | string                         | "h-4 w-4" | Size for icons                       |
+| arrowIcon     | React.ComponentType            | -         | Custom arrow icon for submenus       |
+| side          | "top" \| "right" \| "bottom" \| "left" | "right" | Menu placement               |
+| align         | "start" \| "center" \| "end"  | "start"   | Alignment relative to trigger        |
+| sideOffset    | number                         | 8         | Distance from trigger                |
+| className     | string                         | -         | Additional CSS classes               |
+| open          | boolean                        | -         | Controlled open state                |
+| onOpenChange  | (open: boolean) => void        | -         | Callback when open state changes     |
+
+### NestedMenuSection
+
+| Property     | Type               | Default | Description                          |
+| ------------ | ------------------ | ------- | ------------------------------------ |
+| title        | string             | -       | Section title                        |
+| items        | NestedMenuItem[]   | -       | Menu items in this section           |
+| showDivider  | boolean            | false   | Show divider after section           |
+
+### NestedMenuItem
+
+| Property      | Type                                  | Default     | Description                          |
+| ------------- | ------------------------------------- | ----------- | ------------------------------------ |
+| key           | string                                | -           | Unique key for the item              |
+| label         | string                                | -           | Display text                         |
+| icon          | React.ComponentType                   | -           | Icon component                       |
+| onSelect      | () => void                            | -           | Click handler                        |
+| hasSubmenu    | boolean                               | false       | Whether item has submenu             |
+| submenuItems  | NestedMenuItem[]                      | -           | Submenu items (if hasSubmenu)        |
+| variant       | "default" \| "danger"                | "default"   | Visual variant                       |
+| className     | string                                | -           | Additional CSS classes               |
+| iconColor     | string                                | -           | Custom icon color (CSS value)        |
+| separator     | boolean                               | false       | Show divider after this item         |
+
+### useNestedMenu Hook
+
+Returns:
+
+| Property          | Type                                  | Description                          |
+| ----------------- | ------------------------------------- | ------------------------------------ |
+| isOpen            | boolean                               | Whether submenu is open              |
+| setIsOpen         | (open: boolean) => void               | Set open state                       |
+| itemRef           | HTMLElement \| null                   | Reference to trigger element         |
+| handleMouseEnter  | (e: React.MouseEvent) => void         | Mouse enter handler                  |
+| handleMouseLeave  | () => void                            | Mouse leave handler                  |
+| cancelClose       | () => void                            | Cancel pending close                 |
+
+### NestedMenuTooltip
+
+| Prop          | Type                           | Default   | Description                          |
+| ------------- | ------------------------------ | --------- | ------------------------------------ |
+| isOpen        | boolean                        | -         | Whether tooltip is visible           |
+| onOpenChange  | (open: boolean) => void        | -         | Callback when open state changes     |
+| itemRef       | HTMLElement \| null            | -         | Reference element for positioning    |
+| menuItems     | NestedMenuItem[]               | -         | Items to display                     |
+| iconClassName | string                         | "h-4 w-4" | Icon size                            |
+| className     | string                         | -         | Additional CSS classes               |
+| onMouseEnter  | () => void                     | -         | Mouse enter handler                  |
+| onMouseLeave  | () => void                     | -         | Mouse leave handler                  |
+
+## Accessibility
+
+- **Keyboard Navigation**: Full keyboard support for navigation
+- **Focus Management**: Proper focus indicators and management
+- **ARIA Attributes**: Proper roles and attributes for screen readers
+- **Auto Focus Prevention**: Prevents unwanted focus stealing
+- **Interaction Outside**: Handles clicks outside gracefully
+
+## Notes
+
+- The component uses Radix UI Popover primitive for robust positioning
+- Hover delays are tuned for a natural feel (300ms before closing)
+- Submenus automatically position themselves to avoid viewport edges
+- The component handles cleanup of timers on unmount
+- Works with both controlled and uncontrolled state management

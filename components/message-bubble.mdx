@@ -1,0 +1,323 @@
+---
+title: iOS Message Bubbles
+description: Beautiful iOS-style message bubbles with authentic iMessage appearance, message grouping, and tail effects.
+---
+
+The Message Bubble component recreates the familiar iOS iMessage design with authentic bubble styling, tails, and message grouping. Perfect for chat interfaces that need a polished, recognizable look.
+
+## Preview
+
+<ComponentPreview name="message-bubble-demo" />
+
+## Features
+
+- **Authentic iOS styling** - Matches iMessage's visual design
+- **Message grouping** - Automatic grouping for consecutive messages
+- **Bubble tails** - Dynamic tails that show/hide based on grouping
+- **Sent/received variants** - Distinct styles for user and bot messages
+- **Flexible content** - Supports both text and custom children
+- **Responsive design** - Adapts to different screen sizes
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx gaia-ui add message-bubble
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+**Copy the source files:**
+
+1. Copy `registry/new-york/ui/message-bubble.tsx`
+2. Copy `registry/new-york/ui/message-bubble.css`
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+### Single Message
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export function SingleMessage() {
+  return (
+    <MessageBubble
+      message="Hello! How can I help you today?"
+      variant="received"
+    />
+  );
+}
+```
+
+### Sent Message
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export function SentMessage() {
+  return (
+    <MessageBubble
+      message="I need help with my project"
+      variant="sent"
+    />
+  );
+}
+```
+
+### Grouped Messages
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export function GroupedMessages() {
+  return (
+    <div className="flex flex-col gap-1">
+      <MessageBubble
+        message="Hey there!"
+        variant="received"
+        grouped="first"
+      />
+      <MessageBubble
+        message="How's your day going?"
+        variant="received"
+        grouped="middle"
+      />
+      <MessageBubble
+        message="Let me know if you need anything."
+        variant="received"
+        grouped="last"
+      />
+    </div>
+  );
+}
+```
+
+### Using ChatMessage Component
+
+The `ChatMessage` component automatically handles grouping for you:
+
+```tsx
+import { ChatMessage } from "@/components/ui/message-bubble";
+
+export function Chat() {
+  return (
+    <div className="space-y-4">
+      <ChatMessage
+        messages={[
+          "Hello!",
+          "How can I help you today?",
+          "Feel free to ask me anything."
+        ]}
+        variant="received"
+        timestamp="10:30 AM"
+      />
+      
+      <ChatMessage
+        messages={["Thanks! I need some help with React."]}
+        variant="sent"
+        timestamp="10:31 AM"
+      />
+    </div>
+  );
+}
+```
+
+### Custom Content
+
+```tsx
+import { MessageBubble } from "@/components/ui/message-bubble";
+
+export function CustomMessage() {
+  return (
+    <MessageBubble variant="received">
+      <div className="space-y-2">
+        <p className="font-semibold">Custom Content</p>
+        <p>You can render any React content inside the bubble.</p>
+        <button className="text-sm underline">Click me</button>
+      </div>
+    </MessageBubble>
+  );
+}
+```
+
+### Full Chat Interface
+
+```tsx
+import { ChatMessage } from "@/components/ui/message-bubble";
+
+interface Message {
+  id: string;
+  messages: string[];
+  variant: "sent" | "received";
+  timestamp: string;
+}
+
+const conversation: Message[] = [
+  {
+    id: "1",
+    messages: ["Hi! Welcome to our chat."],
+    variant: "received",
+    timestamp: "9:00 AM"
+  },
+  {
+    id: "2",
+    messages: ["Hello!", "Thanks for reaching out."],
+    variant: "sent",
+    timestamp: "9:01 AM"
+  },
+  {
+    id: "3",
+    messages: [
+      "How can I help you today?",
+      "I'm here to answer any questions."
+    ],
+    variant: "received",
+    timestamp: "9:02 AM"
+  }
+];
+
+export function ChatInterface() {
+  return (
+    <div className="flex flex-col gap-4 p-4 max-w-2xl mx-auto">
+      {conversation.map((msg) => (
+        <ChatMessage
+          key={msg.id}
+          messages={msg.messages}
+          variant={msg.variant}
+          timestamp={msg.timestamp}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+## Props
+
+### MessageBubble
+
+<ParamField path="message" type="string" required>
+  The text content to display in the bubble.
+</ParamField>
+
+<ParamField path="variant" type="'sent' | 'received'" default="'received'">
+  The message variant - `sent` for user messages (blue, right-aligned), `received` for bot/other messages (gray, left-aligned).
+</ParamField>
+
+<ParamField path="grouped" type="'first' | 'middle' | 'last' | 'none'" default="'none'">
+  Grouping state for consecutive messages:
+  - `first` - First message in a group (tail visible, tight bottom corners)
+  - `middle` - Middle message (no tail, tight both sides)
+  - `last` - Last message (tail visible, tight top corners)
+  - `none` - Standalone message (tail visible, full rounded)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the bubble container.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Custom content to render instead of the message text.
+</ParamField>
+
+### ChatMessage
+
+<ParamField path="messages" type="string[]" required>
+  Array of message strings to display as grouped bubbles.
+</ParamField>
+
+<ParamField path="variant" type="'sent' | 'received'" default="'received'">
+  The message variant for all bubbles in this group.
+</ParamField>
+
+<ParamField path="timestamp" type="string">
+  Timestamp to display below the message group.
+</ParamField>
+
+<ParamField path="showTimestamp" type="boolean" default="true">
+  Whether to show the timestamp.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the container.
+</ParamField>
+
+## Styling Details
+
+### Color Scheme
+
+- **Sent messages** - Gaia UI primary color (#00bbff)
+- **Received messages** - Light gray (zinc-300) in light mode
+- **Text color** - Black for readability on both backgrounds
+
+### Bubble Dimensions
+
+- **Max width** - 60vw to prevent bubbles from stretching too wide
+- **Padding** - 8px vertical, 20px horizontal for comfortable reading
+- **Border radius** - 20px for the classic rounded bubble look
+
+### Grouping Behavior
+
+- **First message** - Full radius on top, tight radius on bottom (stacking side)
+- **Middle messages** - Tight radius on both sides (stacking side)
+- **Last message** - Tight radius on top, full radius on bottom (stacking side)
+- **Tails** - Only visible on last message or standalone messages
+
+## Accessibility
+
+- Semantic HTML with proper text rendering
+- Sufficient color contrast for readability
+- Screen reader friendly markup
+- Supports pre-wrap for multi-line messages
+
+## Design Notes
+
+- Based on iOS iMessage design patterns
+- Uses CSS pseudo-elements for authentic tail effects
+- Supports both light and dark modes
+- Optimized for touch interfaces with generous spacing
+
+## Common Patterns
+
+### Auto-grouping Messages
+
+When building a chat interface, you'll want to automatically group consecutive messages from the same sender:
+
+```tsx
+function groupMessages(messages: ChatMessage[]) {
+  return messages.map((msg, index, array) => {
+    const prevMsg = array[index - 1];
+    const nextMsg = array[index + 1];
+    
+    const isFirst = !prevMsg || prevMsg.sender !== msg.sender;
+    const isLast = !nextMsg || nextMsg.sender !== msg.sender;
+    
+    let grouped: "first" | "middle" | "last" | "none";
+    if (isFirst && isLast) grouped = "none";
+    else if (isFirst) grouped = "first";
+    else if (isLast) grouped = "last";
+    else grouped = "middle";
+    
+    return { ...msg, grouped };
+  });
+}
+```
+
+## Related Components
+
+- [Composer](/components/composer) - Chat input component
+- [Tool Calls Section](/components/tool-calls-section) - Display AI agent actions

@@ -1,0 +1,297 @@
+---
+title: Todo Item
+description: A feature-rich todo item component with priorities, due dates, labels, subtasks, and project organization.
+---
+
+<ComponentPreview name="todo-item/default" />
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+  <TabsContent value="automatic">
+    Install the component using the CLI:
+    ```bash
+    npx gaia-ui add todo-item
+    ```
+  </TabsContent>
+  <TabsContent value="manual">
+    1. This component depends on the icons component:
+    ```bash
+    npx gaia-ui add icons
+    ```
+
+    2. Copy the component code from the registry:
+    ```tsx
+    // registry/new-york/ui/todo-item.tsx
+    // registry/new-york/ui/TodoItem.tsx
+    ```
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+A comprehensive todo item component perfect for task management apps.
+
+```tsx
+import { TodoItem } from "@/components/ui/TodoItem";
+
+export default function Example() {
+  const [completed, setCompleted] = useState(false);
+
+  return (
+    <TodoItem
+      id="1"
+      title="Complete project documentation"
+      description="Write comprehensive docs for all components"
+      completed={completed}
+      priority="high"
+      onToggleComplete={(id, value) => setCompleted(value)}
+      onClick={(id) => console.log('Todo clicked:', id)}
+    />
+  );
+}
+```
+
+## Features
+
+### Priority Levels
+
+Four priority levels with distinct visual styles:
+
+```tsx
+<TodoItem priority="high" {...props} />    {/* Red - Urgent */}
+<TodoItem priority="medium" {...props} />  {/* Yellow - Important */}
+<TodoItem priority="low" {...props} />     {/* Blue - Normal */}
+<TodoItem priority="none" {...props} />    {/* Gray - No priority */}
+```
+
+### Due Dates
+
+Smart date formatting with visual indicators:
+
+```tsx
+<TodoItem
+  title="Review pull request"
+  dueDate="2024-03-15"
+  completed={false}
+  priority="medium"
+  // Shows "Today" if due today (green)
+  // Shows "Overdue" if past (red)
+  // Shows relative time ("In 3 days") otherwise
+/>
+```
+
+### Labels & Tags
+
+Organize todos with custom labels:
+
+```tsx
+const labels = [
+  { id: "1", name: "Frontend", color: "#3b82f6" },
+  { id: "2", name: "Bug", color: "#ef4444" },
+];
+
+<TodoItem
+  title="Fix navigation bug"
+  labels={labels}
+  {...props}
+/>
+```
+
+### Subtasks
+
+Track progress with subtasks:
+
+```tsx
+const subtasks = [
+  { id: "1", title: "Design mockup", completed: true },
+  { id: "2", title: "Implement UI", completed: true },
+  { id: "3", title: "Write tests", completed: false },
+];
+
+<TodoItem
+  title="Build new feature"
+  subtasks={subtasks}
+  // Shows "2/3 subtasks" badge
+  {...props}
+/>
+```
+
+### Project Organization
+
+Group todos by project:
+
+```tsx
+const project = {
+  id: "proj-1",
+  name: "Website Redesign",
+  color: "#8b5cf6",
+};
+
+<TodoItem
+  title="Update homepage"
+  project={project}
+  {...props}
+/>
+```
+
+### Selection State
+
+Highlight selected items:
+
+```tsx
+const [selected, setSelected] = useState<string | null>(null);
+
+<TodoItem
+  id="todo-1"
+  title="Review code"
+  isSelected={selected === "todo-1"}
+  onClick={(id) => setSelected(id)}
+  {...props}
+/>
+```
+
+## Props
+
+<PropsTable>
+  <PropRow>
+    <PropName>id</PropName>
+    <PropType>string</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Unique identifier for the todo item.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>title</PropName>
+    <PropType>string</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      The main title/text of the todo.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>description</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Optional description or additional details.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>completed</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Whether the todo is completed.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>priority</PropName>
+    <PropType>"high" | "medium" | "low" | "none"</PropType>
+    <PropDefault>required</PropDefault>
+    <PropDescription>
+      Priority level affecting visual styling.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>dueDate</PropName>
+    <PropType>string | Date</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Optional due date with smart formatting.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>labels</PropName>
+    <PropType>TodoLabel[]</PropType>
+    <PropDefault>[]</PropDefault>
+    <PropDescription>
+      Array of labels/tags for categorization.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>subtasks</PropName>
+    <PropType>TodoSubtask[]</PropType>
+    <PropDefault>[]</PropDefault>
+    <PropDescription>
+      Array of subtasks with completion tracking.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>project</PropName>
+    <PropType>TodoProject</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Project association with name and color.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>onToggleComplete</PropName>
+    <PropType>(id: string, completed: boolean) =&gt; void</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Callback when checkbox is toggled.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>onClick</PropName>
+    <PropType>(id: string) =&gt; void</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Callback when the todo item is clicked.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>isSelected</PropName>
+    <PropType>boolean</PropType>
+    <PropDefault>false</PropDefault>
+    <PropDescription>
+      Whether this item is currently selected.
+    </PropDescription>
+  </PropRow>
+  <PropRow>
+    <PropName>className</PropName>
+    <PropType>string</PropType>
+    <PropDefault>-</PropDefault>
+    <PropDescription>
+      Additional CSS classes.
+    </PropDescription>
+  </PropRow>
+</PropsTable>
+
+## Types
+
+```tsx
+type TodoPriority = "high" | "medium" | "low" | "none";
+
+interface TodoLabel {
+  id: string;
+  name: string;
+  color?: string;
+}
+
+interface TodoSubtask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+interface TodoProject {
+  id: string;
+  name: string;
+  color?: string;
+}
+```
+
+## Accessibility
+
+- Checkbox has proper `aria-label` for screen readers
+- Keyboard navigation with Enter and Space keys
+- Role="button" with tabIndex for focus management
+- Visual indicators complement text information
+- Color is not the only means of conveying priority

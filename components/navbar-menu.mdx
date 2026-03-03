@@ -1,0 +1,270 @@
+---
+title: Navbar Menu
+description: A beautiful animated dropdown menu for navigation with support for icons, descriptions, and custom layouts.
+---
+
+<ComponentPreview name="navbar-menu/default" />
+
+## Basic Usage
+
+<ComponentPreview name="navbar-menu/basic" />
+
+## Static Links
+
+<ComponentPreview name="navbar-menu/static-links" />
+
+## Full Example
+
+<ComponentPreview name="navbar-menu/full" />
+
+## Usage in Gaia
+
+A polished navigation experience. Smooth animations, flexible layouts, and support for both dropdown menus and direct links.
+
+## Installation
+
+<Tabs defaultValue="automatic" className="mt-4">
+  <TabsList>
+    <TabsTrigger value="automatic">Automatic</TabsTrigger>
+    <TabsTrigger value="manual">Manual</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="automatic">
+    <InstallCommand component="navbar-menu" />
+  </TabsContent>
+
+  <TabsContent value="manual">
+
+Copy and paste the following code into your project.
+
+<SourceCode filePath="registry/new-york/ui/navbar-menu.tsx" />
+
+Install required dependencies:
+
+```bash
+pnpm add motion next
+```
+
+This component also depends on the Raised Button component:
+
+```bash
+npx shadcn@latest add raised-button
+```
+
+  </TabsContent>
+</Tabs>
+
+## Usage
+
+```tsx
+import { NavbarWithMenu } from "@/components/ui/navbar-menu";
+import { HugeiconsIcon, Message01Icon } from "@/components/icons";
+
+export default function Example() {
+  const sections = [
+    {
+      id: "product",
+      gridLayout: "grid w-full grid-cols-2 gap-4",
+      links: [
+        {
+          label: "Get Started",
+          href: "/login",
+          description: "Sign Up / Login",
+          icon: <HugeiconsIcon icon={Message01Icon} size={20} />,
+        },
+        {
+          label: "Pricing",
+          href: "/pricing",
+          description: "Choose your plan",
+        },
+      ],
+    },
+  ];
+
+  return (
+    <NavbarWithMenu
+      sections={sections}
+      navItems={[
+        { type: "dropdown", label: "Product", menu: "product" },
+        { type: "link", label: "About", href: "/about" },
+      ]}
+    />
+  );
+}
+```
+
+## Examples
+
+### With Background Images
+
+Links can include background images for a more visual experience:
+
+```tsx
+const sections = [
+  {
+    id: "features",
+    gridLayout: "grid w-full grid-cols-2 gap-4",
+    links: [
+      {
+        label: "AI Assistant",
+        href: "/features/ai",
+        description: "Powered by GPT-4",
+        backgroundImage: "/images/ai-feature.jpg",
+        rowSpan: 2,
+      },
+      {
+        label: "Analytics",
+        href: "/features/analytics",
+        description: "Real-time insights",
+      },
+    ],
+  },
+];
+```
+
+### Custom Grid Layouts
+
+Customize the grid layout for each section:
+
+```tsx
+const sections = [
+  {
+    id: "resources",
+    gridLayout: "grid w-full grid-cols-3 gap-3",
+    links: [
+      { label: "Docs", href: "/docs" },
+      { label: "Blog", href: "/blog" },
+      { label: "API", href: "/api" },
+    ],
+  },
+];
+```
+
+### Mixed Navigation Items
+
+Combine dropdown menus with direct links:
+
+```tsx
+<NavbarWithMenu
+  sections={sections}
+  navItems={[
+    { type: "dropdown", label: "Product", menu: "product" },
+    { type: "link", label: "Pricing", href: "/pricing" },
+    { type: "dropdown", label: "Resources", menu: "resources" },
+    { type: "link", label: "Contact", href: "/contact" },
+  ]}
+/>
+```
+
+### Custom Logo and CTA
+
+```tsx
+<NavbarWithMenu
+  sections={sections}
+  navItems={navItems}
+  logo={<img src="/logo.svg" alt="Logo" />}
+  cta={<Button>Sign Up Free</Button>}
+/>
+```
+
+### Span Multiple Rows
+
+Make important links take up more space:
+
+```tsx
+const links = [
+  {
+    label: "Featured Product",
+    href: "/featured",
+    description: "Our latest innovation",
+    backgroundImage: "/featured.jpg",
+    rowSpan: 2, // Takes up 2 rows
+  },
+  {
+    label: "Other Link",
+    href: "/other",
+  },
+];
+```
+
+## Features
+
+- **Smooth Animations**: Uses Framer Motion for fluid dropdown animations
+- **Flexible Layouts**: Customizable grid layouts for menu sections
+- **Mixed Navigation**: Support for both dropdown menus and direct links
+- **Background Images**: Rich visual links with optional background images
+- **Icon Support**: Add icons to menu items for better visual hierarchy
+- **Keyboard Navigation**: Full keyboard accessibility with arrow keys
+- **Hover States**: Polished hover effects with background highlights
+- **External Links**: Automatic handling of external links with proper attributes
+- **Theme Support**: Automatic dark/light mode theme detection
+- **Responsive**: Adapts to different screen sizes
+
+## Props
+
+### NavbarWithMenu
+
+| Prop      | Type                       | Default | Description                          |
+| --------- | -------------------------- | ------- | ------------------------------------ |
+| sections  | NavbarMenuSection[]        | -       | Array of menu sections               |
+| navItems  | NavItem[]                  | -       | Navigation items (links or dropdowns)|
+| logo      | React.ReactNode            | -       | Custom logo component                |
+| cta       | React.ReactNode            | -       | Call-to-action button                |
+
+### NavbarMenuSection
+
+| Property   | Type               | Default                          | Description                     |
+| ---------- | ------------------ | -------------------------------- | ------------------------------- |
+| id         | string             | -                                | Unique identifier for section   |
+| links      | NavbarMenuLink[]   | -                                | Array of links in this section  |
+| gridLayout | string             | "grid w-full grid-cols-2 gap-4" | CSS classes for grid layout     |
+
+### NavbarMenuLink
+
+| Property        | Type            | Default | Description                              |
+| --------------- | --------------- | ------- | ---------------------------------------- |
+| label           | string          | -       | Link text                                |
+| href            | string          | -       | Link URL                                 |
+| icon            | React.ReactNode | -       | Icon component to display                |
+| external        | boolean         | false   | Whether link opens in new tab            |
+| description     | string          | -       | Subtitle text under the label            |
+| backgroundImage | string          | -       | URL to background image                  |
+| rowSpan         | number          | 1       | Number of grid rows to span              |
+
+### NavItem
+
+Can be either a link or dropdown:
+
+**Link:**
+```tsx
+{
+  type: "link";
+  label: string;
+  href: string;
+}
+```
+
+**Dropdown:**
+```tsx
+{
+  type: "dropdown";
+  label: string;
+  menu: string; // ID of the section to display
+}
+```
+
+## Accessibility
+
+- **Keyboard Navigation**: Use arrow keys to navigate between menu items
+- **Enter/Space**: Activate menu items
+- **Escape**: Close open menus
+- **Focus Management**: Proper focus indicators and tab order
+- **ARIA Labels**: Menu buttons have proper `aria-expanded` attributes
+- **Screen Reader Support**: Semantic HTML and proper roles
+
+## Notes
+
+- The component automatically detects the theme (light/dark) and adjusts the logo if using default logo paths
+- Menu items are grouped in a hover container, so the menu stays open when moving between items
+- Background images use Next.js Image component for optimization
+- The component uses CSS variables for theming, ensuring consistency across your app

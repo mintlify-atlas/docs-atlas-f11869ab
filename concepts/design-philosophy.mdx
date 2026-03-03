@@ -1,0 +1,268 @@
+---
+title: Design Philosophy
+description: Core design principles and visual guidelines for building beautiful, consistent AI interfaces with Gaia UI.
+---
+
+Gaia UI follows Apple's Human Interface Guidelines and modern design principles. Every component is crafted with intention, clarity, and user experience at the forefront.
+
+## Flat Design, No Outlines
+
+We avoid heavy borders and outlines in favor of more subtle, modern techniques:
+
+- **Subtle backgrounds** — Differentiate elements with slight background color changes
+- **Elevation through shadows** — Use soft, layered shadows for depth
+- **Negative space** — Let elements breathe; whitespace is your friend
+- **Color fills** — Solid, muted colors with proper opacity
+
+```tsx
+// ❌ Don't do this
+<div className="border border-gray-300 rounded">
+
+// ✅ Do this instead
+<div className="bg-muted/50 rounded-xl shadow-sm">
+```
+
+<Note>
+Flat design doesn't mean lifeless. Use shadows, opacity, and subtle color changes to create depth without heavy borders.
+</Note>
+
+## Visual Hierarchy
+
+Guide the eye naturally through your component by establishing clear visual hierarchy:
+
+### 1. Size Matters
+
+Important elements should be larger. This is the most fundamental way to establish hierarchy.
+
+### 2. Weight for Emphasis
+
+- **Headings** — Use font-weight 500-600 (medium to semibold)
+- **Body text** — Use font-weight 400 (regular)
+- **Labels** — Use font-weight 500 for slight emphasis
+
+### 3. Color for Attention
+
+- **Primary actions** — Get the accent color
+- **Secondary actions** — Stay muted
+- **Destructive actions** — Use semantic red
+
+### 4. Spacing for Grouping
+
+Related items stay close, separate concerns stay apart. Spacing is one of the most powerful tools for creating visual hierarchy.
+
+## Spacing & Padding
+
+Be generous but intentional with space. Proper spacing makes interfaces feel premium and easy to use.
+
+### Touch Targets
+
+Minimum 44x44px for interactive elements, following Apple's accessibility recommendations.
+
+### Padding Scale
+
+Stick to the Tailwind scale for consistency:
+
+- `p-3` — Compact spacing (12px)
+- `p-4` — Standard spacing (16px)
+- `p-6` — Comfortable spacing (24px)
+- `p-8` — Generous spacing (32px)
+
+### Gap Patterns
+
+- `gap-3` or `gap-4` — For most layouts
+- `gap-6` or `gap-8` — For section separation
+
+### Card Padding
+
+Cards need at least `p-4`, ideally `p-6` for a comfortable feel:
+
+```tsx
+// Component padding guidelines
+<Card className="p-6">                    // Outer container
+  <CardHeader className="pb-4">           // Section spacing
+    <CardTitle className="mb-2">          // Title to content
+  </CardHeader>
+  <CardContent className="space-y-4">     // Content gaps
+```
+
+<Tip>
+When in doubt, add more padding. Cramped interfaces feel cheap, while generous spacing feels premium.
+</Tip>
+
+## Typography
+
+Typography creates rhythm and hierarchy in your interfaces.
+
+### Scale Guidelines
+
+- **Headings** — Use the default font stack, weights 500-700
+- **Body text** — 14-16px, weight 400, good line-height (1.5-1.6)
+- **Labels** — 12-14px, weight 500, slightly muted color
+
+### Size Discipline
+
+Don't mix too many sizes. Stick to 2-3 text sizes per component maximum.
+
+```tsx
+// Good - Clear hierarchy with 3 sizes
+<div>
+  <h3 className="text-2xl font-semibold">Title</h3>
+  <p className="text-base">Description text</p>
+  <span className="text-sm text-muted-foreground">Metadata</span>
+</div>
+```
+
+## Color Usage
+
+Color should be used purposefully, not decoratively.
+
+### Primary/Accent Colors
+
+Use sparingly for CTAs and important actions. If everything is highlighted, nothing is.
+
+### Muted Tones
+
+- Background fills
+- Secondary text
+- Dividers and separators
+
+### Semantic Colors
+
+- **Red** — Destructive actions and errors
+- **Green** — Success states
+- **Yellow** — Warnings and caution
+- **Blue** — Information and neutral actions
+
+### Dark Mode Support
+
+Always design for both modes from the start. Use CSS variables instead of hardcoded colors.
+
+<Warning>
+Never use hardcoded colors like `bg-white` or `text-black`. Always use theme-aware variables like `bg-background` and `text-foreground`.
+</Warning>
+
+## Animation Guidelines
+
+Motion should feel natural and purposeful, never gratuitous.
+
+### Timing
+
+- **Micro-interactions** — 150-200ms (hover states, toggles)
+- **Small transitions** — 200-300ms (dropdowns, tooltips)
+- **Large transitions** — 300-500ms (modals, page transitions)
+- **Never longer than 500ms** for UI animations
+
+### Easing Functions
+
+- **ease-out** — For elements entering (start fast, end slow)
+- **ease-in** — For elements leaving (start slow, end fast)
+- **ease-in-out** — For elements that stay on screen while moving
+
+```tsx
+// Good transition setup
+transition: all 200ms ease-out;
+```
+
+### What to Animate
+
+- ✅ Opacity changes
+- ✅ Transform (scale, translate, rotate)
+- ✅ Background color
+- ❌ Width/height (causes layout thrashing)
+- ❌ Box shadows (can be expensive)
+
+<Note>
+Always respect `prefers-reduced-motion`. Users who enable this preference should see no or minimal animation.
+</Note>
+
+## Iconography
+
+We use [Hugeicons](https://hugeicons.com/) through the `icons` component for consistent, beautiful icons.
+
+```tsx
+import { Icons } from "@/components/icons";
+
+<Icons.search className="size-5" />
+<Icons.chevronDown className="size-4" />
+```
+
+### Icon Guidelines
+
+- **Size consistency** — Use `size-4` (16px), `size-5` (20px), or `size-6` (24px)
+- **Match visual weight** — Icons should feel balanced with adjacent text
+- **Stroke width** — Keep consistent at 1.5-2px
+- **Provide fallbacks** — Not all icons exist; handle gracefully
+
+## Component Architecture
+
+### Built on shadcn/ui
+
+Gaia UI is built on [shadcn/ui](https://ui.shadcn.com/), which uses Radix primitives for accessible, composable components.
+
+```tsx
+// ❌ HeroUI pattern from older versions
+import { Accordion, AccordionItem } from "@heroui/accordion";
+
+// ✅ shadcn pattern for Gaia UI
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion";
+```
+
+### Class Merging with cn()
+
+Always use the `cn` utility for conditional classes:
+
+```tsx
+import { cn } from "@/lib/utils";
+
+<div className={cn(
+  "base-classes",
+  variant === "primary" && "primary-classes",
+  className  // Allow consumer overrides
+)} />
+```
+
+### Props Pattern
+
+Export clear, well-typed interfaces:
+
+```tsx
+export interface YourComponentProps {
+  /** Brief description of this prop */
+  variant?: "default" | "outline" | "ghost";
+  /** Always include className for customization */
+  className?: string;
+  /** Children when applicable */
+  children?: React.ReactNode;
+}
+```
+
+## Performance Considerations
+
+### Bundle Size
+
+- Import only what you need from libraries
+- Avoid importing entire icon sets
+- Use dynamic imports for heavy components
+
+```tsx
+// ❌ Imports everything
+import * as Icons from "lucide-react";
+
+// ✅ Tree-shakeable
+import { Search, ChevronDown } from "lucide-react";
+```
+
+### Rendering Performance
+
+- Use `React.memo()` for expensive components
+- Avoid inline function definitions in JSX when possible
+- Keep state as local as possible
+
+<Tip>
+Look at components like `tool-calls-section`, `composer`, and `weather-card` for examples of these principles in action.
+</Tip>
