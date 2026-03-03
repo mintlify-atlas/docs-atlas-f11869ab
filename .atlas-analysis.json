@@ -1,0 +1,142 @@
+{
+  "projectType": "frontend",
+  "projectName": "Gaia UI",
+  "projectDescription": "Production-ready React components designed specifically for building AI assistants and conversational interfaces.",
+  "theme": "willow",
+  "primaryColor": "#00bbff",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/design-philosophy",
+              "concepts/accessibility",
+              "concepts/theming"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/adding-components",
+              "guides/customization",
+              "guides/contributing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Components",
+        "groups": [
+          {
+            "group": "Chat & Messaging",
+            "pages": [
+              "components/composer",
+              "components/message-bubble",
+              "components/tool-calls-section",
+              "components/slash-command-dropdown"
+            ]
+          },
+          {
+            "group": "Cards & Displays",
+            "pages": [
+              "components/weather-card",
+              "components/email-compose-card",
+              "components/calendar-event-card",
+              "components/notification-card",
+              "components/goal-card",
+              "components/pricing-card",
+              "components/holo-card"
+            ]
+          },
+          {
+            "group": "Navigation",
+            "pages": [
+              "components/navbar-menu",
+              "components/nested-menu"
+            ]
+          },
+          {
+            "group": "Interactive Elements",
+            "pages": [
+              "components/raised-button",
+              "components/github-stars-button",
+              "components/model-selector",
+              "components/search-results-tabs"
+            ]
+          },
+          {
+            "group": "Data & Visualization",
+            "pages": [
+              "components/knowledge-graph",
+              "components/code-block",
+              "components/todo-item"
+            ]
+          },
+          {
+            "group": "Media & Files",
+            "pages": [
+              "components/file-dropzone",
+              "components/file-preview",
+              "components/link-preview"
+            ]
+          },
+          {
+            "group": "UI Elements",
+            "pages": [
+              "components/author-tooltip",
+              "components/wave-spinner",
+              "components/icons"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Battle-tested AI chat components",
+    "Beautiful iOS-style message bubbles",
+    "Interactive tool calls visualization",
+    "Rich file upload and preview",
+    "Advanced navigation menus",
+    "3D holographic effects",
+    "Knowledge graph visualization",
+    "Slash command interface",
+    "AI-powered email composer",
+    "Accessible by default"
+  ],
+  "publicApiSurface": [
+    "Composer",
+    "MessageBubble",
+    "ToolCallsSection",
+    "SlashCommandDropdown",
+    "WeatherCard",
+    "EmailComposeCard",
+    "NavbarMenu",
+    "NestedMenu",
+    "RaisedButton",
+    "KnowledgeGraph",
+    "FileDropzone",
+    "FilePreview",
+    "HoloCard",
+    "ModelSelector",
+    "SearchResultsTabs",
+    "CodeBlock",
+    "LinkPreview",
+    "AuthorTooltip",
+    "WaveSpinner",
+    "Icons"
+  ]
+}
