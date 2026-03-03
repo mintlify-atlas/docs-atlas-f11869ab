@@ -1,0 +1,316 @@
+---
+title: "Workflow Card"
+description: "A card component for displaying workflow automations with rotated tool icons, execution stats, and action buttons."
+---
+
+The Workflow Card visualizes agentic workflows with eye-catching rotated tool icons, execution statistics, and configurable action buttons. Perfect for automation interfaces and workflow galleries.
+
+## Preview
+
+<CodeGroup>
+```tsx Default (Explore)
+import { WorkflowCard } from "@/components/ui/workflow-card";
+
+export default function Example() {
+  return (
+    <WorkflowCard
+      title="Email Summary Workflow"
+      description="Summarize your daily emails automatically"
+      steps={[
+        { id: "1", title: "Fetch emails", toolCategory: "email" },
+        { id: "2", title: "Summarize", toolCategory: "documents" },
+      ]}
+      totalExecutions={1250}
+      onAction={() => console.log("Create workflow")}
+    />
+  );
+}
+```
+
+```tsx User Workflow
+import { WorkflowCard } from "@/components/ui/workflow-card";
+
+export default function UserWorkflow() {
+  return (
+    <WorkflowCard
+      variant="user"
+      title="Daily News Digest"
+      description="Compile and summarize top tech news"
+      steps={[
+        { id: "1", title: "Search news", toolCategory: "search" },
+        { id: "2", title: "Summarize", toolCategory: "documents" },
+        { id: "3", title: "Send email", toolCategory: "email" },
+      ]}
+      totalExecutions={3450}
+      isActivated={true}
+      triggerLabel="Every morning at 8 AM"
+      actionLabel="Run Now"
+      onAction={() => console.log("Run workflow")}
+    />
+  );
+}
+```
+
+```tsx Suggestion
+import { WorkflowCard } from "@/components/ui/workflow-card";
+
+export default function Suggestion() {
+  return (
+    <WorkflowCard
+      variant="suggestion"
+      title="Weekly Task Summary"
+      description="Get a summary of completed tasks every Friday"
+      steps={[
+        { id: "1", title: "Fetch tasks", toolCategory: "productivity" },
+        { id: "2", title: "Generate report", toolCategory: "documents" },
+        { id: "3", title: "Notify", toolCategory: "notifications" },
+      ]}
+      actionLabel="Try This"
+      onAction={() => console.log("Create from suggestion")}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/workflow-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react @hugeicons/core-free-icons
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy the workflow-card component to `components/ui/workflow-card.tsx`
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Workflow (Explore)
+
+```tsx
+import { WorkflowCard } from "@/components/ui/workflow-card";
+
+<WorkflowCard
+  title="Email Summary Workflow"
+  description="Summarize your daily emails automatically"
+  steps={[
+    { id: "1", title: "Fetch emails", toolCategory: "email" },
+    { id: "2", title: "Summarize", toolCategory: "documents" },
+  ]}
+  totalExecutions={1250}
+  onAction={() => console.log("Create workflow")}
+/>
+```
+
+### User's Active Workflow
+
+```tsx
+<WorkflowCard
+  variant="user"
+  title="Daily News Digest"
+  description="Compile and summarize top tech news"
+  steps={[
+    { id: "1", title: "Search news", toolCategory: "search" },
+    { id: "2", title: "Summarize", toolCategory: "documents" },
+    { id: "3", title: "Send email", toolCategory: "email" },
+  ]}
+  totalExecutions={3450}
+  isActivated={true}
+  triggerLabel="Every morning at 8 AM"
+  onAction={() => console.log("Run workflow")}
+/>
+```
+
+### Clickable Card
+
+```tsx
+<WorkflowCard
+  title="Task Automation"
+  steps={[
+    { id: "1", title: "Create task", toolCategory: "productivity" },
+  ]}
+  onClick={() => router.push('/workflows/123')}
+  onAction={() => console.log("Quick action")}
+/>
+```
+
+### With Loading State
+
+```tsx
+<WorkflowCard
+  title="Processing Workflow"
+  steps={steps}
+  isLoading={true}
+  onAction={() => {}}
+/>
+```
+
+## Props
+
+<ResponseField name="title" type="string" required>
+  Workflow title displayed prominently at the top
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Brief description of what the workflow does. Displayed below the title.
+</ResponseField>
+
+<ResponseField name="steps" type="WorkflowStep[]" required>
+  Array of workflow steps that determine the tool icons displayed
+  
+  <Expandable title="WorkflowStep properties">
+    <ResponseField name="id" type="string" required>
+      Unique identifier for the step
+    </ResponseField>
+    
+    <ResponseField name="title" type="string" required>
+      Step title (for accessibility)
+    </ResponseField>
+    
+    <ResponseField name="description" type="string">
+      Optional step description
+    </ResponseField>
+    
+    <ResponseField name="toolCategory" type="string" required>
+      Category that determines the icon and color scheme. See [Supported Categories](#supported-categories).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="totalExecutions" type="number" default="0">
+  Total number of times this workflow has been executed. Automatically formatted (1.2K, 3.5M).
+</ResponseField>
+
+<ResponseField name="isActivated" type="boolean" default="false">
+  Whether the workflow is currently active (only shown in `user` variant)
+</ResponseField>
+
+<ResponseField name="triggerLabel" type="string">
+  Display text for the workflow trigger (e.g., "Every morning at 8 AM")
+</ResponseField>
+
+<ResponseField name="variant" type="'user' | 'explore' | 'suggestion'" default="'explore'">
+  Card variant that determines appearance and behavior:
+  - `user`: Shows activation status, "Run" button
+  - `explore`: Default discovery mode, "Create" button
+  - `suggestion`: Recommended workflows
+</ResponseField>
+
+<ResponseField name="actionLabel" type="string">
+  Custom label for the action button. Defaults to "Run" (user) or "Create" (explore/suggestion).
+</ResponseField>
+
+<ResponseField name="isLoading" type="boolean" default="false">
+  Shows loading spinner in the action button when true
+</ResponseField>
+
+<ResponseField name="onAction" type="() => void">
+  Callback when the action button is clicked
+</ResponseField>
+
+<ResponseField name="onClick" type="() => void">
+  Callback when the card itself is clicked. Enables hover states.
+</ResponseField>
+
+<ResponseField name="showDescriptionAsTooltip" type="boolean" default="false">
+  When true, shows description in tooltip instead of inline
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+<ResponseField name="categoryConfig" type="Record<string, ToolCategoryConfig>">
+  Custom category configurations to override default icons and colors
+</ResponseField>
+
+## Supported Categories
+
+The component includes built-in styling for these tool categories:
+
+- **productivity** - Emerald green for task and project management tools
+- **documents** - Orange for document processing and editing
+- **development** - Cyan for developer tools and APIs
+- **memory** - Indigo for knowledge management and storage
+- **creative** - Pink for design and creative tools
+- **goal_tracking** - Emerald for goal and habit tracking
+- **notifications** - Yellow for messaging and alerts
+- **email** - Blue for email and communication
+- **calendar** - Purple for scheduling and time management
+- **search** - Teal for search and discovery tools
+- **general** - Gray fallback for uncategorized tools
+
+Each category has a unique background color and icon color that creates a cohesive visual system.
+
+## Features
+
+### Rotated Tool Icons
+
+The signature visual feature: tool category icons are displayed with an alternating rotation effect (±8 degrees) that creates an eye-catching, dynamic appearance. Icons overlap slightly with proper z-index stacking.
+
+### Multiple Variants
+
+- **User**: For workflows owned by the user, showing activation status and run counts
+- **Explore**: For browsing available workflows in a gallery
+- **Suggestion**: For recommended workflows based on user behavior
+
+### Execution Count Formatting
+
+Counts are automatically formatted:
+- 1,250 → "1.2K runs"
+- 3,500,000 → "3.5M runs"
+
+### Smart Icon Display
+
+Shows up to 3 unique category icons with a "+N" indicator if there are more. Duplicate categories are automatically deduplicated.
+
+### Activation Status Badge
+
+In `user` variant, shows a green "Active" or gray "Inactive" badge to indicate workflow status.
+
+### Action Buttons
+
+Configurable action buttons with:
+- Loading states with spinning icon
+- Click event propagation handling
+- Theme-aware styling (solid blue for explore, flat for user)
+
+### Dark Mode Support
+
+Fully adapts to dark mode with appropriate contrast ratios and color adjustments.
+
+## Usage in Gaia
+
+The Workflow Card is the core component of Gaia's automation interface, visualizing agentic workflows and their status throughout the platform. It's used in:
+
+- Workflow galleries and discovery pages
+- User's workflow dashboard
+- Workflow suggestions and recommendations
+- Search results for automation templates
+
+## Accessibility
+
+- Proper button semantics with `role` and `tabIndex`
+- Keyboard navigation support (Enter and Space keys)
+- Action button clicks don't trigger card click
+- ARIA labels on icon elements
+- Visual focus indicators
+
+<Note>
+  The component uses a maximum of 3 category icons for visual clarity. If your workflow has more tool categories, they'll be indicated with a "+N" badge.
+</Note>

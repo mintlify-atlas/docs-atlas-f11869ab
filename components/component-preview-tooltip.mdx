@@ -1,0 +1,304 @@
+---
+title: "Component Preview Tooltip"
+description: "A hover tooltip that shows a live preview of any component, perfect for navigation menus and component galleries."
+---
+
+The Component Preview Tooltip dynamically loads and displays a live preview of any component when hovering over a trigger element. It's designed to speed up development by letting you preview components instantly without navigation.
+
+## Preview
+
+<CodeGroup>
+```tsx Default
+import { ComponentPreviewTooltip } from "@/components/ui/component-preview-tooltip";
+import Link from "next/link";
+
+export default function Example() {
+  return (
+    <ComponentPreviewTooltip componentName="todo-item" side="right">
+      <Link href="/docs/components/todo-item">
+        Todo Item
+      </Link>
+    </ComponentPreviewTooltip>
+  );
+}
+```
+
+```tsx Custom Size
+import { ComponentPreviewTooltip } from "@/components/ui/component-preview-tooltip";
+
+export default function CustomSize() {
+  return (
+    <ComponentPreviewTooltip 
+      componentName="weather-card"
+      width={400}
+      height={300}
+      scale={0.7}
+      side="top"
+    >
+      <button>Hover to preview Weather Card</button>
+    </ComponentPreviewTooltip>
+  );
+}
+```
+
+```tsx Navigation Menu
+import { ComponentPreviewTooltip } from "@/components/ui/component-preview-tooltip";
+
+const components = [
+  { name: "twitter-card", label: "Twitter Card" },
+  { name: "workflow-card", label: "Workflow Card" },
+  { name: "weather-card", label: "Weather Card" },
+];
+
+export default function NavMenu() {
+  return (
+    <nav>
+      {components.map((comp) => (
+        <ComponentPreviewTooltip 
+          key={comp.name}
+          componentName={comp.name}
+          side="right"
+        >
+          <a href={`/components/${comp.name}`}>
+            {comp.label}
+          </a>
+        </ComponentPreviewTooltip>
+      ))}
+    </nav>
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/component-preview-tooltip"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @radix-ui/react-tooltip
+        ```
+      </Step>
+      <Step title="Add tooltip component">
+        Install the base tooltip component from Radix UI or shadcn/ui
+      </Step>
+      <Step title="Copy the source code">
+        Copy the component-preview-tooltip to `components/ui/component-preview-tooltip.tsx`
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { ComponentPreviewTooltip } from "@/components/ui/component-preview-tooltip";
+
+<ComponentPreviewTooltip componentName="todo-item" side="right">
+  <Link href="/docs/components/todo-item">
+    Todo Item
+  </Link>
+</ComponentPreviewTooltip>
+```
+
+### In a Sidebar Navigation
+
+```tsx
+import { ComponentPreviewTooltip } from "@/components/ui/component-preview-tooltip";
+
+function Sidebar() {
+  return (
+    <aside>
+      <ComponentPreviewTooltip componentName="twitter-card" side="right">
+        <a href="/components/twitter-card">Twitter Card</a>
+      </ComponentPreviewTooltip>
+      
+      <ComponentPreviewTooltip componentName="workflow-card" side="right">
+        <a href="/components/workflow-card">Workflow Card</a>
+      </ComponentPreviewTooltip>
+    </aside>
+  );
+}
+```
+
+### Custom Dimensions
+
+```tsx
+<ComponentPreviewTooltip 
+  componentName="weather-card"
+  width={400}
+  height={300}
+  scale={0.7}
+  side="top"
+>
+  <button>Preview Weather Card</button>
+</ComponentPreviewTooltip>
+```
+
+### Different Positions
+
+```tsx
+// Show on top
+<ComponentPreviewTooltip componentName="todo-item" side="top">
+  <span>Hover me</span>
+</ComponentPreviewTooltip>
+
+// Show on left
+<ComponentPreviewTooltip componentName="todo-item" side="left">
+  <span>Hover me</span>
+</ComponentPreviewTooltip>
+
+// Show on bottom
+<ComponentPreviewTooltip componentName="todo-item" side="bottom">
+  <span>Hover me</span>
+</ComponentPreviewTooltip>
+```
+
+## Props
+
+<ResponseField name="componentName" type="string" required>
+  Name of the component to preview. Must match a folder name in `components/previews/` containing a `default.tsx` export.
+</ResponseField>
+
+<ResponseField name="children" type="ReactNode" required>
+  The element that triggers the tooltip on hover. Usually a link or button.
+</ResponseField>
+
+<ResponseField name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'top'">
+  Position of the tooltip relative to the trigger element
+</ResponseField>
+
+<ResponseField name="width" type="number" default="300">
+  Width of the tooltip container in pixels
+</ResponseField>
+
+<ResponseField name="height" type="number" default="200">
+  Height of the tooltip container in pixels
+</ResponseField>
+
+<ResponseField name="scale" type="number" default="0.8">
+  Scale factor for the preview (0.8 = 80% of original size). Useful for fitting larger components in the preview.
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the trigger wrapper
+</ResponseField>
+
+## Features
+
+### Dynamic Component Loading
+
+The tooltip uses React's dynamic imports to lazy-load preview components only when needed. This keeps your initial bundle size small and loads previews on-demand.
+
+```tsx
+// Automatically imports from:
+import(`@/components/previews/${componentName}/default`)
+```
+
+### Positioning System
+
+Built on Radix UI's tooltip positioning, which automatically:
+- Positions the tooltip relative to the trigger
+- Handles viewport boundaries
+- Flips to the opposite side if there's not enough space
+- Centers the tooltip along the trigger element
+
+### Loading States
+
+Shows a spinning loader while the component preview is being loaded, providing visual feedback during the import process.
+
+### Graceful Fallbacks
+
+If a preview component can't be found or fails to load:
+- Displays "Preview not found" message
+- Logs error to console for debugging
+- Doesn't break the parent component
+
+### Scale Control
+
+The `scale` prop transforms the preview content, allowing you to:
+- Fit large components in smaller tooltips
+- Maintain aspect ratios
+- Control preview density
+
+### Smooth Animations
+
+Includes fade and zoom animations:
+- Fade in/out on open/close
+- Zoom effect for modern feel
+- Slide animation based on position
+- Respects `prefers-reduced-motion`
+
+### Dark Mode Support
+
+Fully themed for dark mode with:
+- Adaptive background colors
+- Themed borders and shadows
+- Arrow that matches tooltip background
+
+## Preview Component Structure
+
+For the tooltip to work, your preview components should follow this structure:
+
+```
+components/
+└── previews/
+    └── your-component/
+        └── default.tsx    ← Default export with preview
+```
+
+Example preview component:
+
+```tsx
+// components/previews/twitter-card/default.tsx
+import { TwitterCard } from "@/components/ui/twitter-card";
+
+export default function TwitterCardPreview() {
+  return (
+    <TwitterCard
+      author={{
+        name: "GAIA",
+        handle: "heygaia_io",
+        avatar: "/avatar.png",
+        verified: true,
+      }}
+      content="Preview example"
+      timestamp={new Date()}
+      likes={42}
+    />
+  );
+}
+```
+
+## Usage in Gaia
+
+The Component Preview Tooltip speeds up development by letting developers preview components instantly in the Gaia UI registry without navigation. Perfect for:
+
+- Component library documentation
+- Design system browsers
+- Navigation menus with component links
+- Component selection interfaces
+
+## Accessibility
+
+- Built on Radix UI's accessible tooltip primitives
+- Keyboard navigation support
+- Screen reader compatible
+- Respects `prefers-reduced-motion`
+- Trigger wrapped in focusable element
+
+<Note>
+  The tooltip has a `delayDuration` of 0ms for instant feedback. Adjust this in the `Tooltip` component if you prefer a delay before showing the preview.
+</Note>
+
+<Warning>
+  Make sure your preview components are self-contained and don't require external data or context that won't be available in the isolated tooltip environment.
+</Warning>

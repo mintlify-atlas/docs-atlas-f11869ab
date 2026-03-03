@@ -1,0 +1,295 @@
+---
+title: "Twitter Card"
+description: "A Twitter/X-style post card with author info, engagement metrics, and media support for displaying social content."
+---
+
+The Twitter Card component replicates the familiar Twitter/X post interface, allowing you to display tweets with full engagement metrics, media attachments, and quoted tweets.
+
+## Preview
+
+<CodeGroup>
+```tsx Default
+import { TwitterCard } from "@/components/ui/twitter-card";
+
+export default function Example() {
+  return (
+    <TwitterCard
+      author={{
+        name: "GAIA",
+        handle: "heygaia_io",
+        avatar: "/avatar.png",
+        verified: true,
+      }}
+      content="Just shipped a new feature! 🚀"
+      timestamp={new Date()}
+      likes={142}
+      retweets={38}
+    />
+  );
+}
+```
+
+```tsx With Media
+import { TwitterCard } from "@/components/ui/twitter-card";
+
+export default function WithMedia() {
+  return (
+    <TwitterCard
+      author={{
+        name: "GAIA",
+        handle: "heygaia_io",
+        avatar: "/avatar.png",
+        verified: true,
+      }}
+      content="Check out this amazing view!"
+      timestamp={new Date()}
+      likes={532}
+      retweets={124}
+      replies={45}
+      media="/landscape.jpg"
+    />
+  );
+}
+```
+
+```tsx With Quoted Tweet
+import { TwitterCard } from "@/components/ui/twitter-card";
+
+export default function WithQuote() {
+  return (
+    <TwitterCard
+      author={{
+        name: "GAIA",
+        handle: "heygaia_io",
+        avatar: "/avatar.png",
+        verified: true,
+      }}
+      content="This is exactly what we're building at GAIA!"
+      timestamp={new Date()}
+      likes={89}
+      retweets={23}
+      quoted={{
+        author: {
+          name: "Tech Innovator",
+          handle: "techinnovator",
+          avatar: "/avatar2.png",
+        },
+        content: "The future of AI is conversational interfaces that understand context.",
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    npx shadcn@latest add "https://ui.heygaia.io/r/twitter-card"
+    ```
+  </Tab>
+  <Tab title="Manual">
+    <Steps>
+      <Step title="Install dependencies">
+        ```bash
+        npm install @hugeicons/react
+        ```
+      </Step>
+      <Step title="Add icons component">
+        Copy the icons wrapper component from [icons](/components/icons)
+      </Step>
+      <Step title="Copy the source code">
+        Copy the twitter-card component to `components/ui/twitter-card.tsx`
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Basic Tweet
+
+```tsx
+import { TwitterCard } from "@/components/ui/twitter-card";
+
+<TwitterCard
+  author={{
+    name: "GAIA",
+    handle: "heygaia_io",
+    avatar: "/avatar.png",
+    verified: true,
+  }}
+  content="Just shipped a new feature! 🚀"
+  timestamp={new Date()}
+  likes={142}
+  retweets={38}
+/>
+```
+
+### Tweet with Media
+
+```tsx
+<TwitterCard
+  author={{
+    name: "GAIA",
+    handle: "heygaia_io",
+    avatar: "/avatar.png",
+  }}
+  content="Check out our latest design!"
+  timestamp="2024-03-03T10:30:00Z"
+  likes={256}
+  retweets={78}
+  replies={34}
+  media="/screenshot.png"
+/>
+```
+
+### Quoted Tweet
+
+```tsx
+<TwitterCard
+  author={{
+    name: "GAIA",
+    handle: "heygaia_io",
+    avatar: "/avatar.png",
+    verified: true,
+  }}
+  content="This is what we're all about!"
+  timestamp={new Date()}
+  likes={89}
+  retweets={23}
+  quoted={{
+    author: {
+      name: "Original Author",
+      handle: "original_user",
+      avatar: "/avatar2.png",
+    },
+    content: "The future of AI is here.",
+  }}
+/>
+```
+
+## Props
+
+<ResponseField name="author" type="AuthorInfo" required>
+  Author information for the tweet
+  
+  <Expandable title="AuthorInfo properties">
+    <ResponseField name="name" type="string" required>
+      Display name of the author
+    </ResponseField>
+    
+    <ResponseField name="handle" type="string" required>
+      Twitter handle (without @)
+    </ResponseField>
+    
+    <ResponseField name="avatar" type="string" required>
+      URL to the author's avatar image
+    </ResponseField>
+    
+    <ResponseField name="verified" type="boolean">
+      Whether the account has a verified badge
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="content" type="string" required>
+  The tweet text content. Supports multi-line text with `\n` characters.
+</ResponseField>
+
+<ResponseField name="timestamp" type="Date | string" required>
+  When the tweet was posted. Accepts Date object or ISO string. Automatically formats as relative time (e.g., "2h", "Mar 3").
+</ResponseField>
+
+<ResponseField name="likes" type="number" default="0">
+  Number of likes. Automatically formatted (e.g., 1.2K, 3.5M).
+</ResponseField>
+
+<ResponseField name="retweets" type="number" default="0">
+  Number of retweets. Automatically formatted.
+</ResponseField>
+
+<ResponseField name="replies" type="number" default="0">
+  Number of replies. Automatically formatted.
+</ResponseField>
+
+<ResponseField name="media" type="string">
+  URL to an image to display in the tweet. Limited to 320px height.
+</ResponseField>
+
+<ResponseField name="quoted" type="QuotedTweet">
+  A quoted tweet to display within this tweet
+  
+  <Expandable title="QuotedTweet properties">
+    <ResponseField name="author" type="object" required>
+      Author info for the quoted tweet
+      - `name`: string - Display name
+      - `handle`: string - Twitter handle
+      - `avatar`: string - Avatar URL
+    </ResponseField>
+    
+    <ResponseField name="content" type="string" required>
+      The quoted tweet's text content (truncated to 2 lines)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="className" type="string">
+  Additional CSS classes to apply to the card
+</ResponseField>
+
+## Features
+
+### Author Information
+
+Displays profile picture, name, handle, and optional verified badge. The header uses a 48x48px circular avatar.
+
+### Engagement Metrics
+
+All engagement buttons (reply, retweet, like, share) include:
+- Interactive hover states with color-coded backgrounds
+- Icon animations
+- Formatted count displays (1K, 1.2M format)
+- Zero counts are hidden for cleaner UI
+
+### Media Support
+
+Images are displayed in a rounded container with:
+- Max height of 320px
+- Responsive width
+- Border styling that adapts to dark mode
+
+### Quoted Tweets
+
+Nested quote cards feature:
+- Smaller avatar (20x20px)
+- Truncated content (2 line clamp)
+- Distinct border to separate from main content
+
+### Timestamp Formatting
+
+Automatically formats timestamps:
+- Less than 1 hour: "Just now"
+- Less than 24 hours: "Xh"
+- Older: "Mon DD" format
+
+### Dark Mode Support
+
+Fully supports dark mode with theme-aware colors for backgrounds, text, borders, and hover states.
+
+## Usage in Gaia
+
+The Twitter Card is used for native tweet embedding, allowing users to consume social content without leaving the dashboard. Perfect for social media monitoring, content curation, and engagement tracking.
+
+## Accessibility
+
+- All interactive buttons include `aria-label` attributes
+- Semantic HTML with proper button elements
+- Keyboard navigation support
+- Screen reader friendly with descriptive labels
+
+<Note>
+  The component uses Next.js Image for avatars but standard img tags for media to avoid layout issues with dynamic image sizes.
+</Note>
